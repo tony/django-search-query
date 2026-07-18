@@ -13,56 +13,47 @@ This file provides guidance to AI agents (including Claude Code, Cursor, and oth
 
 ## Project Overview
 
-django-search-query is a Django integration that parses human-friendly search query strings into structured, validated queries and compiles them into Django ORM lookups. The project dogfoods gp-libs' Sphinx/pytest tooling while focusing on Django-facing helpers.
+This repository is a [uv](https://docs.astral.sh/uv/) workspace that ships two independently-installable, independently-versioned packages under `packages/`:
 
-Key features:
-- Tokenizer and parser that turn a search string (e.g. `status:open author:tony "exact phrase"`) into an abstract syntax tree
-- Field/operator grammar with support for terms, phrases, boolean logic, and grouping
-- Query builder that compiles the AST into Django `Q` objects and querysets
-- Field-mapping and validation hooks so callers control which fields are searchable
-- Settings hooks for default operators, allowed fields, and error handling
+- **django-search-query** (`packages/django-search-query/`, module `django_search_query`) — a reusable, Lucene-inspired search query language for Django. It accepts a structured search string and translates it into Django-compatible query behavior, giving applications a consistent search syntax without prescribing a user interface, admin integration, or search backend. Scope is intentionally loose: Lucene-inspired, not Lucene-compatible.
+- **django-admin-search-query** (`packages/django-admin-search-query/`, module `django_admin_search_query`) — an optional Django admin integration built on top of the core package. It brings structured search to admin changelist pages while keeping the query language usable on its own, and may ship a self-contained vanilla-JavaScript search input (syntax highlighting, contextual suggestions, semantic autocomplete) that degrades to a plain text field without JavaScript.
+
+The relationship between the packages is intentionally loose: the admin package depends on the core through a version floor (`django-search-query>=X`), and the core never depends on admin behavior or presentation concerns.
+
+The project dogfoods gp-libs' pytest/doctest tooling and gp-sphinx for documentation.
+
+> **Status:** early scaffolding. The tokenizer, parser, AST, query builder, admin mixin, and JavaScript input are not implemented yet.
 
 ## Development Environment
 
 This project uses:
-- Python 3.10+
-- Django 4.2/5.1/5.2
-- [uv](https://github.com/astral-sh/uv) for dependency management
+- Python 3.12+ (Django 6.0 drops 3.10/3.11, so 3.12 is the floor)
+- Django 5.2 (LTS) and 6.0
+- [uv](https://github.com/astral-sh/uv) for dependency management (single root lockfile, workspace of two packages)
 - [ruff](https://github.com/astral-sh/ruff) for linting/formatting
-- [mypy](https://github.com/python/mypy) with `django-stubs` for typing
+- [ty](https://docs.astral.sh/ty/) for type checking (consumes `django-stubs` as PEP 561 stubs; no mypy plugin)
 - [pytest](https://docs.pytest.org/) + `pytest-django` + gp-libs doctest tooling
-- [Sphinx](https://www.sphinx-doc.org/) (furo theme) for documentation
+- [Sphinx](https://www.sphinx-doc.org/) via [gp-sphinx](https://gp-sphinx.git-pull.com) for documentation
 
 ## Common Commands
 
 ### Setting Up Environment
 
 ```bash
-# Install runtime dependencies
-uv pip install --editable .
-uv pip sync
-
-# Install with development groups (docs, lint, tests)
-uv pip install --editable . -G dev
-# or selectively
-uv pip install --editable . -G docs
-uv pip install --editable . -G testing
-uv pip install --editable . -G lint
+# Install both workspace packages (editable) plus dev tooling
+uv sync --all-packages --group dev
 ```
 
 ### Running Tests
 
 ```bash
-# Run all tests (includes doctests configured in pyproject)
+# Run all tests across the workspace (includes doctests configured in pyproject)
 just test
 # or
 uv run pytest
 
 # Run a single test file
-uv run pytest tests/test_parser.py
-
-# Run docs/doctests
-uv run pytest docs
+uv run pytest tests/test_metadata.py
 
 # Watch tests
 just start          # runs ptw with default args
@@ -74,7 +65,6 @@ uv run ptw .        # explicit watcher
 ```bash
 # Ruff lint
 just ruff
-# or directly
 uv run ruff check .
 
 # Format code
@@ -84,19 +74,19 @@ uv run ruff format .
 # Ruff with fixes
 uv run ruff check . --fix --show-fixes
 
-# Type checking
-just mypy
-uv run mypy `find . -type f -not -path '*/.*' | grep -i '.*[.]py$'`
+# Type checking (ty)
+just ty
+uv run ty check
 
 # Watchers
 just watch-ruff
-just watch-mypy
+just watch-ty
 ```
 
 ### Documentation
 
 ```bash
-# Build docs (Sphinx)
+# Build docs (single site covering both packages)
 just build-docs
 
 # Live-reload docs
@@ -113,12 +103,31 @@ Use this loop for every change:
 1. **Format First**: `uv run ruff format .`
 2. **Run Tests**: `uv run pytest`
 3. **Run Linting**: `uv run ruff check . --fix --show-fixes`
-4. **Check Types**: `uv run mypy`
+4. **Check Types**: `uv run ty check`
 5. **Verify Tests Again**: `uv run pytest`
 
 ## Code Architecture
 
-django-search-query flows a raw search string through a parse pipeline and compiles the result into Django lookups:
+### Workspace layout
+
+```
+pyproject.toml                       # virtual workspace root: members, shared ruff/ty/pytest/coverage config
+packages/
+  django-search-query/               # core query language (distributable)
+    pyproject.toml                    # [project] + hatchling; depends on django>=5.2
+    src/django_search_query/
+  django-admin-search-query/          # optional admin integration (distributable)
+    pyproject.toml                    # depends on django>=5.2 + django-search-query>=X
+    src/django_admin_search_query/
+tests/                               # shared test suite (settings.py, urls.py, smoke tests)
+docs/                                # single Sphinx site documenting both packages
+```
+
+All shared tool config (`ruff`, `ty`, `pytest`, `coverage`) lives **only** in the root `pyproject.toml`, so one `uv run pytest` / `uv run ruff check` / `uv run ty check` covers the whole workspace. Member pyprojects carry only `[project]` + the hatchling build backend. The workspace redirect for each member (`{ workspace = true }`) appears exactly once, in the root `[tool.uv.sources]`; members depend on each other with ordinary version pins.
+
+### Core query pipeline (`django-search-query`)
+
+The core package is expected to flow a raw search string through a parse pipeline and compile the result into Django lookups:
 
 ```
 Search string
@@ -127,33 +136,14 @@ Search string
                         └─ Query builder (AST → Django Q objects / queryset)
 ```
 
-### Core Modules
-
-1. **Tokenizer** (`src/django_search_query/tokenizer.py`)
-   - Lexes a raw search string into a stream of tokens (terms, phrases, field prefixes, operators)
-   - Preserves position information for error reporting
-
-2. **Parser** (`src/django_search_query/parser.py`)
-   - Consumes tokens and produces an abstract syntax tree of query nodes
-   - Handles boolean logic (`AND`/`OR`/`NOT`), grouping, and field-scoped terms
-
-3. **AST Nodes** (`src/django_search_query/ast.py`)
-   - Dataclasses for term, phrase, field, boolean, and group nodes
-   - The stable intermediate representation shared by parser and builder
-
-4. **Query Builder** (`src/django_search_query/builder.py`)
-   - Compiles the AST into Django `Q` objects and applies them to a queryset
-   - Resolves user-facing field names to ORM lookups via a field map
-
-5. **Settings & Types** (`src/django_search_query/settings.py`, `_internal/types.py`)
-   - Centralized defaults (allowed fields, default operator) and typing helpers
+Field-mapping and validation hooks let callers control which fields are searchable, keeping user-facing field names decoupled from ORM lookups.
 
 ## Testing Strategy
 
-django-search-query uses pytest with `pytest-django` and doctest collection enabled via `pyproject.toml`:
+Tests live at the repository root in `tests/` and run against both packages via a single pytest invocation:
 
-- Doctests run on modules and docs (`addopts` includes `--doctest-modules` and `testpaths` includes `docs`)
-- `DJANGO_SETTINGS_MODULE=tests.settings` is configured in `pyproject.toml`; use these settings for new tests
+- Doctests run on modules and docs (`addopts` includes `--doctest-modules`; `testpaths` includes each package's `src` plus `tests` and `docs`)
+- `DJANGO_SETTINGS_MODULE=tests.settings` is configured in `pyproject.toml`; the settings install both workspace apps plus the admin and its supporting apps, so the admin integration can be exercised from one run
 - Prefer pytest fixtures and `pytest.mark.django_db` only when touching Django models (most tests are pure functions)
 - Use gp-libs doctest helpers when adding RST/markdown doctests in docs
 - Keep query snippets small and realistic; prefer dedicated tests under `tests/` for complex scenarios
@@ -173,7 +163,7 @@ def test_parser_scopes_field_terms():
 - Prefer namespace imports for stdlib (`import typing as t`; `import enum`); third-party packages may use `from X import Y`
 - Follow NumPy-style docstrings for functions and methods
 - Ruff enforces formatting; use `ruff format` before committing
-- Type hints are required; keep mypy strictness in mind and add `TypedDict`/`Protocol` as needed
+- Type hints are required; keep ty strictness in mind and add `TypedDict`/`Protocol` as needed
 - Use Django utilities (`force_str`, `mark_safe`, `select_template`) instead of reimplementing equivalents
 
 ### Doctests
@@ -296,7 +286,7 @@ Assert on `caplog.records` attributes, not string matching on `caplog.text`:
 Never create tags. Never push tags. The user handles tagging and tag
 pushes (tags trigger the CI publish workflow).
 
-Release commit subjects are plain and short: `Tag v<version>`. Put
+Release commit subjects are plain and short: `Tag <package> v<version>`. Put
 the detailed why/what in the commit body. Don't use the
 `Scope(type[detail]):` format for releases — don't bury the lede.
 
@@ -321,9 +311,9 @@ Commit types: feat, fix, refactor, docs, chore, test, style, py(deps), py(deps[d
 
 ## Changelog Conventions
 
-These rules apply when authoring entries in `CHANGES`, which is rendered as the Sphinx changelog page. Modeled on Django's release-notes shape — deliverables get titles and prose, not bullets.
+Each package keeps its **own** changelog at `packages/<name>/CHANGES`, rendered together on the docs changelog page. These rules apply when authoring entries. Modeled on Django's release-notes shape — deliverables get titles and prose, not bullets.
 
-**Release entry boilerplate.** Every release header is `## django-search-query X.Y.Z (YYYY-MM-DD)`. The file opens with a `## django-search-query X.Y.Z (unreleased)` placeholder block fenced by `<!-- KEEP THIS PLACEHOLDER ... -->` and `<!-- END PLACEHOLDER ... -->` HTML comments — new release entries land immediately below the END marker, never above it.
+**Release entry boilerplate.** Every release header is `## <package> X.Y.Z (YYYY-MM-DD)` (e.g. `## django-search-query 0.1.0 (2026-01-01)`). Each file opens with a `## <package> X.Y.Z (unreleased)` placeholder block fenced by `<!-- KEEP THIS PLACEHOLDER ... -->` and `<!-- END PLACEHOLDER ... -->` HTML comments — new release entries land immediately below the END marker, never above it.
 
 **Open with a multi-sentence lead paragraph.** Plain prose, no italic. Open with the version as sentence subject (*"django-search-query X.Y.Z ships …"*) so the lead is self-contained when excerpted. Two to four sentences telling the reader what shipped and who cares — user-visible takeaways, not internal mechanism. Cross-reference detail docs with `{ref}` to keep the lead compact.
 
@@ -370,9 +360,13 @@ For files under `notes/**`:
 ## References
 
 - Documentation: https://django-search-query.git-pull.com
-- Changelog: `CHANGES`
-- PyPI: https://pypi.org/project/django-search-query/
+- Changelog: `packages/*/CHANGES`
+- PyPI (core): https://pypi.org/project/django-search-query/
+- PyPI (admin): https://pypi.org/project/django-admin-search-query/
 - gp-libs (doctest/Sphinx tooling used here): https://gp-libs.git-pull.com
+- gp-sphinx (docs design system): https://gp-sphinx.git-pull.com
+- uv workspaces: https://docs.astral.sh/uv/concepts/projects/workspaces/
+- ty (type checker): https://docs.astral.sh/ty/
 - Django docs: https://docs.djangoproject.com/
 - Django QuerySet API: https://docs.djangoproject.com/en/stable/ref/models/querysets/
 
