@@ -1,0 +1,57 @@
+# justfile for django-search-query documentation
+# https://just.systems/
+
+set shell := ["bash", "-uc"]
+
+# Configuration
+http_port := "8035"
+builddir := "_build"
+sphinxopts := ""
+sphinxbuild := "uv run sphinx-build"
+sourcedir := "."
+
+# Sphinx options
+allsphinxopts := "-d " + builddir + "/doctrees " + sphinxopts + " ."
+
+# List all available commands
+default:
+    @just --list
+
+# Build HTML documentation
+[group: 'build']
+html:
+    {{ sphinxbuild }} -b dirhtml {{ allsphinxopts }} {{ builddir }}/html
+    @echo ""
+    @echo "Build finished. The HTML pages are in {{ builddir }}/html."
+
+# Check build from scratch (nitpicky, quiet)
+[group: 'validate']
+checkbuild:
+    rm -rf {{ builddir }}
+    {{ sphinxbuild }} -n -q ./ {{ builddir }}
+
+# Check all external links
+[group: 'validate']
+linkcheck:
+    {{ sphinxbuild }} -b linkcheck {{ allsphinxopts }} {{ builddir }}/linkcheck
+
+# Clean build directory
+[group: 'misc']
+[confirm]
+clean:
+    rm -rf {{ builddir }}/*
+
+# Serve documentation via Python http.server
+[group: 'dev']
+serve:
+    python -m http.server {{ http_port }} --directory {{ builddir }}/html
+
+# Start sphinx-autobuild server
+[group: 'dev']
+start:
+    uv run sphinx-autobuild -b dirhtml "{{ sourcedir }}" "{{ builddir }}" {{ sphinxopts }} --port {{ http_port }}
+
+# Design mode: watch static files and disable incremental builds
+[group: 'dev']
+design:
+    uv run sphinx-autobuild -b dirhtml "{{ sourcedir }}" "{{ builddir }}" {{ sphinxopts }} --port {{ http_port }} --watch "." -a
