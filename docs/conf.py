@@ -49,8 +49,14 @@ conf = merge_sphinx_config(
     source_repository=f"{about['__github__']}/",
     docs_url=about["__docs__"],
     source_branch="master",
+    light_logo="img/icons/logo.svg",
+    dark_logo="img/icons/logo-dark.svg",
+    html_favicon="_static/favicon.ico",
+    html_extra_path=["manifest.json"],
     extra_extensions=[
         "sphinx.ext.doctest",
+        "sphinx_autodoc_api_style",
+        "docs._ext.widgets",
     ],
     intersphinx_mapping={
         "python": ("https://docs.python.org/3/", None),
@@ -64,7 +70,6 @@ conf = merge_sphinx_config(
         github_url=about["__github__"],
         source_branch="master",
     ),
-    autodoc_mock_imports=["django"],
     set_type_checking_flag=True,
     rediraffe_redirects="redirects.txt",
     # AGENTS.md / CLAUDE.md are agent guidance, not site pages; keep Sphinx
@@ -73,5 +78,21 @@ conf = merge_sphinx_config(
 )
 globals().update(conf)
 
+# Names available to every `>>>` block in the docs (sphinx.ext.doctest).
+# Django is already configured above via django.setup().
+doctest_global_setup = """
+from django.db.models import Q
+from django_search_query import build_q, parse, search_query_to_q
+from django_search_query.registry import FieldRegistry, FieldSpec
+"""
+
 # Keep django_search_query imported so linkcode can resolve its source.
 _ = django_search_query
+
+
+def setup(app: object) -> dict[str, bool]:
+    """Register the ``dsq`` query-language lexer for MyST code fences."""
+    from django_search_query.pygments_lexer import DjangoSearchQueryLexer
+
+    app.add_lexer("dsq", DjangoSearchQueryLexer)  # ty: ignore[unresolved-attribute]
+    return {"parallel_read_safe": True, "parallel_write_safe": True}

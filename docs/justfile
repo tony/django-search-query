@@ -4,7 +4,7 @@
 set shell := ["bash", "-uc"]
 
 # Configuration
-http_port := "8035"
+http_port := "8032"
 builddir := "_build"
 sphinxopts := ""
 sphinxbuild := "uv run sphinx-build"
@@ -34,6 +34,11 @@ checkbuild:
 [group: 'validate']
 linkcheck:
     {{ sphinxbuild }} -b linkcheck {{ allsphinxopts }} {{ builddir }}/linkcheck
+
+# Run documentation doctests
+[group: 'validate']
+doctest:
+    {{ sphinxbuild }} -b doctest {{ allsphinxopts }} {{ builddir }}/doctest
 
 # Clean build directory
 [group: 'misc']

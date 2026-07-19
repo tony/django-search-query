@@ -43,6 +43,7 @@ dev = [
   "django-admin-search-query",
   # Docs
   "gp-sphinx==0.0.1a34",
+  "sphinx-autodoc-api-style==0.0.1a34",
   "gp-libs>=0.0.19",
   "sphinx-autobuild",
   # Testing
@@ -62,6 +63,8 @@ dev = [
   "ruff",
   "ty",
   "django-stubs",
+  # Pygments lexer for `dsq` code fences (dev/docs only, not a runtime dep)
+  "pygments",
 ]
 
 [tool.ruff]

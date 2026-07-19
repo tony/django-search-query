@@ -1,0 +1,76 @@
+{#
+  Package install widget: two independent tab rows (package x method)
+  over one panel per (package, method) pair.
+
+  - PACKAGE tabs (data-tab-kind="package") choose the distribution:
+    ``core`` (django-search-query) or ``admin`` (django-admin-search-query).
+  - METHOD tabs (data-tab-kind="method") choose the tool: ``uv-add`` or
+    ``pip``.
+
+  Each panel carries both data-package and data-method so the prehydrate
+  CSS in docs/_ext/widgets/_prehydrate.py can key visibility on the pair
+  from ``<html data-package-install-package=...>`` +
+  ``<html data-package-install-method=...>``. The (core, uv-add) panel is
+  the only one server-rendered without ``hidden`` — the no-JS fallback.
+  widget.js keeps tab aria-selected + the two <html> attrs in sync; the
+  CSS does the showing/hiding.
+#}
+<div class="dsq-package-install">
+  <div class="dsq-package-install__tabs dsq-package-install__tabs--packages"
+       role="tablist"
+       aria-label="Package">
+    {% for package in packages %}
+    <button type="button"
+            class="dsq-package-install__tab"
+            role="tab"
+            data-tab-kind="package"
+            data-tab-value="{{ package.id }}"
+            aria-selected="{{ 'true' if package.id == default_package else 'false' }}"
+            tabindex="{{ '0' if package.id == default_package else '-1' }}">
+      {{ package.label }}
+    </button>
+    {% endfor %}
+  </div>
+
+  <div class="dsq-package-install__tabs dsq-package-install__tabs--methods"
+       role="tablist"
+       aria-label="Install method">
+    {% for method in methods %}
+    <button type="button"
+            class="dsq-package-install__tab"
+            role="tab"
+            data-tab-kind="method"
+            data-tab-value="{{ method.id }}"
+            aria-selected="{{ 'true' if method.id == default_method else 'false' }}"
+            tabindex="{{ '0' if method.id == default_method else '-1' }}">
+      {{ method.label }}
+    </button>
+    {% endfor %}
+  </div>
+
+  <div class="dsq-package-install__body">
+    {% for panel in panels %}
+    <div class="dsq-package-install__panel"
+         role="tabpanel"
+         data-package="{{ panel.package.id }}"
+         data-method="{{ panel.method.id }}"
+         tabindex="0"
+         {% if not panel.is_default %}hidden{% endif %}>
+
+      <p class="dsq-package-install__preamble">
+        Install <code>{{ panel.package.dist }}</code>:
+      </p>
+
+      {{ panel.code_a_body | highlight("console") }}
+
+      {% if panel.package.id == 'admin' %}
+      <p class="dsq-package-install__preamble">Then wire it into the Django admin:</p>
+      {% else %}
+      <p class="dsq-package-install__preamble">Then build a query from a search string:</p>
+      {% endif %}
+
+      {{ panel.code_b_body | highlight("python") }}
+    </div>
+    {% endfor %}
+  </div>
+</div>

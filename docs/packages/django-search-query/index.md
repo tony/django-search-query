@@ -2,47 +2,46 @@
 
 # django-search-query
 
-A reusable query-language package for Django applications.
+A [Lucene]-inspired search query language that compiles to Django
+{class}`~django.db.models.Q` objects.
 
-It accepts structured search input and translates it into Django-compatible
-query behavior. The goal is a consistent search syntax that does not require a
-particular user interface, admin integration, or search backend.
+::::{grid} 1 1 2 2
+:gutter: 2 2 3 3
 
-## Scope
+:::{grid-item-card} {octicon}`rocket` Tutorial
+:link: ../../tutorial
+:link-type: doc
+Build a search registry and run a query against a Django queryset.
+:::
 
-The scope is intentionally loose. The syntax is inspired by [Lucene] --
-field-scoped terms (`status:open`), quoted phrases (`"exact match"`), boolean
-operators (`AND` / `OR` / `NOT`), and grouping -- but the package does not
-claim full Lucene compatibility or identical semantics.
+:::{grid-item-card} {octicon}`checklist` How-to
+:link: how-to
+:link-type: doc
+Task recipes: map field names, restrict searchable fields, use wildcards and
+ranges, and catch parse errors.
+:::
 
-## Intended pipeline
+:::{grid-item-card} {octicon}`book` Reference
+:link: reference
+:link-type: doc
+The public API and the query-syntax grammar.
+:::
 
-The package is expected to flow a raw search string through a parse pipeline
-and compile the result into Django lookups:
+:::{grid-item-card} {octicon}`light-bulb` Explanation
+:link: explanation
+:link-type: doc
+How a search string becomes a `Q` object, and why the highlighter uses a
+second lexer.
+:::
 
-```text
-Search string
-    -> Tokenizer (lexing)
-        -> Parser (AST: terms, phrases, boolean / grouped nodes)
-            -> Query builder (AST -> Django Q objects / queryset)
-```
-
-Callers control which fields are searchable through a field map and
-validation hooks, keeping user-facing field names decoupled from ORM lookups.
-
-```{note}
-This package is early scaffolding. The tokenizer, parser, AST, and query
-builder are not implemented yet; this page describes the intended design.
-```
-
-## Install
-
-```console
-$ pip install django-search-query
-```
-
-```console
-$ uv add django-search-query
-```
+::::
 
 [Lucene]: https://lucene.apache.org/
+
+```{toctree}
+:hidden:
+
+how-to
+reference
+explanation
+```
