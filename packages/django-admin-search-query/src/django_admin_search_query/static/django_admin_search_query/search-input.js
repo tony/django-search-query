@@ -145,21 +145,34 @@
     };
   }
 
-  // Resolve a context to suggestion items. Local today (field names + enum
-  // values live in the cached schema); the (mode, field, fragment) shape is
-  // exactly what a future `search-suggest/?field=&q=` endpoint would take.
+  // Resolve a context to suggestion items. Local today (field names, operators,
+  // and enum values all live in the cached schema); the (mode, field, fragment)
+  // shape is exactly what a future `search-suggest/?field=&q=` endpoint takes.
   function localSuggestions(context, schema) {
     if (context.mode === "enum-value") {
       var spec = fieldByNameOrAlias(schema, context.field);
-      if (!spec || !spec.enum_values || !spec.enum_values.length) {
+      if (!spec) {
         return [];
       }
-      return spec.enum_values
-        .filter(function (value) {
-          return value.indexOf(context.fragment) === 0;
+      var fragment = context.fragment;
+      var operators = spec.operators || [];
+      var enumValues = spec.enum_values || [];
+      // Operator mode: the fragment already opens an operator (`>`/`<`/`[`/`{`),
+      // or a comparison/range field with no enum has only operators to offer.
+      // Otherwise complete against the enum values.
+      var startsOperator = /^[<>[{]/.test(fragment);
+      var source =
+        operators.length && (startsOperator || (fragment === "" && !enumValues.length))
+          ? operators
+          : enumValues;
+      return source
+        .filter(function (candidate) {
+          // Drop the exact fragment so a fully-typed value/operator closes the
+          // list instead of re-offering itself.
+          return candidate.indexOf(fragment) === 0 && candidate !== fragment;
         })
-        .map(function (value) {
-          var text = context.field + ":" + value;
+        .map(function (candidate) {
+          var text = context.field + ":" + candidate;
           return { label: text, insert: text };
         });
     }
