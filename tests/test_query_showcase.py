@@ -67,6 +67,22 @@ CASES: list[tuple[str, str, tuple[str, ...], tuple[str, ...]]] = [
         ('status" LIKE open', 'author" LIKE %tony%', " AND "),
         ("Launch plan",),
     ),
+    # ``?`` is a wildcard to the highlighter only; the compiler treats it as a
+    # literal character, so this is an icontains for the exact string "a?c".
+    (
+        "title:a?c",
+        "<Q: (AND: ('title__icontains', 'a?c'))>",
+        ('"test_app_article"."title" LIKE %a?c%',),
+        (),
+    ),
+    # A bare value on a date field is a literal icontains, not a date compare:
+    # the ISO-rendered datetime column substring-matches "2024".
+    (
+        "created:2024",
+        "<Q: (AND: ('created__icontains', '2024'))>",
+        ('"test_app_article"."created" LIKE %2024%',),
+        ("Draft memo", "Launch plan", "Report Q3"),
+    ),
 ]
 
 
