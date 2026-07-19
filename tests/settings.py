@@ -50,3 +50,7 @@ TEMPLATES = [
 ROOT_URLCONF = "tests.urls"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Fast password hashing keeps admin_client / superuser-creating tests cheap.
+# MD5 is acceptable for tests and never runs in production.
+PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
