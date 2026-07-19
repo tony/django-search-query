@@ -4,11 +4,11 @@
 
 ## The pipeline
 
-A search string becomes a `Q` through three stages, each owned by one
-module. The tokenizer classifies characters into a token stream and records
-their source offsets, deferring every grammar decision to the parser. The
-parser is a precedence-climbing (Pratt) parser: it consumes the token stream
-and builds an AST, validating each field it meets against a
+A search string becomes a {class}`~django.db.models.Q` through three stages,
+each owned by one module. The tokenizer classifies characters into a token
+stream and records their source offsets, deferring every grammar decision to
+the parser. The parser is a precedence-climbing (Pratt) parser: it consumes
+the token stream and builds an AST, validating each field it meets against a
 {class}`~django_search_query.registry.FieldRegistry` as it goes, so an
 unknown field or an unsupported operator raises
 {exc}`~django_search_query.errors.QueryParseError` before compilation ever

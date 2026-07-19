@@ -2,8 +2,8 @@
 
 # django-search-query
 
-A [Lucene]-inspired search query language that compiles to Django `Q`
-objects.
+A [Lucene]-inspired search query language that compiles to Django
+{class}`~django.db.models.Q` objects.
 
 ::::{grid} 1 1 2 2
 :gutter: 2 2 3 3

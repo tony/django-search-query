@@ -25,11 +25,12 @@ everyone.
 
 The colored input is a progressive enhancement of an admin feature that
 already works: the stock `<input id=searchbar>` and Django's own
-`search_fields` matching. `SearchQueryAdminMixin` renders the search box
-through a per-admin `change_list.html` that calls `{{ block.super }}` to
-render Django's own search form untouched -- facets, hidden filter
-parameters, and help text stay whatever the installed Django version
-renders -- and only adds one thing after it: a hidden `data-*` config
+`search_fields` matching.
+{class}`~django_admin_search_query.mixin.SearchQueryAdminMixin` renders the
+search box through a per-admin `change_list.html` that calls
+`{{ block.super }}` to render Django's own search form untouched -- facets,
+hidden filter parameters, and help text stay whatever the installed Django
+version renders -- and only adds one thing after it: a hidden `data-*` config
 element carrying the URLs of the `search-tokens/` and `search-highlight/`
 endpoints (see {doc}`reference`), emitted only when `search_query_registry`
 is set.

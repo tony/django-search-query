@@ -25,10 +25,10 @@ Each class attribute has a matching `get_*` method, so dynamic behavior --
 a registry that depends on `request.user`, say -- only needs to override the
 method, not chase every place the attribute is read. Called with no
 overrides, the hooks read the class attributes straight through, and
-`get_search_query_default_fields` falls back to
-{attr}`~django.contrib.admin.ModelAdmin.search_fields` (stripped of Django's
-lookup sigils -- `^`, `=`, `@`, `$`) whenever `search_query_default_fields`
-is left empty:
+{meth}`~django_admin_search_query.mixin.SearchQueryAdminMixin.get_search_query_default_fields`
+falls back to {attr}`~django.contrib.admin.ModelAdmin.search_fields`
+(stripped of Django's lookup sigils -- `^`, `=`, `@`, `$`) whenever
+`search_query_default_fields` is left empty:
 
 ```{doctest}
 >>> from django_admin_search_query.mixin import SearchQueryAdminMixin
@@ -44,9 +44,11 @@ term, and returns `super().get_search_results(...)` unchanged -- Django's
 own `search_fields` behavior -- whenever the term is blank, no registry is
 configured, or
 {exc}`~django_search_query.errors.QueryParseError` is raised while
-compiling it; otherwise it returns `queryset.filter(q), False`. The `bool`
-is always `False`: filtering by `Q` here introduces no joins that would
-make Django's duplicate-row handling necessary.
+compiling it; otherwise it returns a filtered
+{class}`~django.db.models.QuerySet`: `queryset.filter(q), False`. The
+`bool` is always `False`: filtering by {class}`~django.db.models.Q` here
+introduces no joins that would make Django's duplicate-row handling
+necessary.
 
 ## JSON endpoints
 

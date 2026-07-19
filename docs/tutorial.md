@@ -10,11 +10,13 @@ never need more than this.
 
 ## Describe your searchable fields
 
-`search_query_to_q` needs to know which fields a query string may touch, and
-what kind of value each one holds -- a plain string, an enum, a date. You
-declare that once with a `FieldRegistry` built from `FieldSpec` entries; the
-registry is what turns `status:open` into a validated lookup instead of an
-arbitrary attribute access.
+{func}`~django_search_query.search_query_to_q` needs to know which fields a
+query string may touch, and what kind of value each one holds -- a plain
+string, an enum, a date. You declare that once with a
+{class}`~django_search_query.registry.FieldRegistry` built from
+{class}`~django_search_query.registry.FieldSpec` entries; the registry is
+what turns `status:open` into a validated lookup instead of an arbitrary
+attribute access.
 
 A registry for an `Article` model with a title, a body, an author, a status,
 and a creation date looks like this:
