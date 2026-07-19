@@ -37,6 +37,7 @@ dev = [
     { name = "django-stubs" },
     { name = "gp-libs", specifier = ">=0.0.19" },
     { name = "gp-sphinx", specifier = "==0.0.1a34" },
+    { name = "pygments" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-django" },

@@ -62,6 +62,8 @@ dev = [
   "ruff",
   "ty",
   "django-stubs",
+  # Pygments lexer for `dsq` code fences (dev/docs only, not a runtime dep)
+  "pygments",
 ]
 
 [tool.ruff]
