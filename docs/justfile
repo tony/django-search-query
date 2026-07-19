@@ -4,7 +4,7 @@
 set shell := ["bash", "-uc"]
 
 # Configuration
-http_port := "8035"
+http_port := "8032"
 builddir := "_build"
 sphinxopts := ""
 sphinxbuild := "uv run sphinx-build"
