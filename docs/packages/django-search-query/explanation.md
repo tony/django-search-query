@@ -53,7 +53,7 @@ The two lexers share no code: keeping them independent means a change meant
 to loosen highlighting can never accidentally loosen what the parser
 accepts, and vice versa. It is also why `?` can color as a wildcard in the
 search box while the compiler still treats it as a literal character -- see
-{doc}`reference` for that boundary case, and
+{doc}`../../query` for that boundary case, and
 {doc}`../django-admin-search-query/colored-input` for the JavaScript port of
 this same lexer that colors the admin search box client-side.
 

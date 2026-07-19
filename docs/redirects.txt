@@ -1,1 +1,3 @@
 quickstart tutorial
+packages/django-search-query/reference query
+packages/django-admin-search-query/reference api

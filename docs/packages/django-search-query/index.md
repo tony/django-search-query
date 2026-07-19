@@ -21,10 +21,16 @@ Task recipes: map field names, restrict searchable fields, use wildcards and
 ranges, and catch parse errors.
 :::
 
-:::{grid-item-card} {octicon}`book` Reference
-:link: reference
+:::{grid-item-card} {octicon}`search` Query language
+:link: ../../query
 :link-type: doc
-The public API and the query-syntax grammar.
+The search syntax and the query-string-to-queryset showcase.
+:::
+
+:::{grid-item-card} {octicon}`book` API reference
+:link: ../../api
+:link-type: doc
+The public API: parse, build_q, search_query_to_q, the field registry.
 :::
 
 :::{grid-item-card} {octicon}`light-bulb` Explanation
@@ -42,6 +48,5 @@ second lexer.
 :hidden:
 
 how-to
-reference
 explanation
 ```

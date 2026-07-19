@@ -14,22 +14,28 @@ optional [Django admin] integration built on top of it.
 Build a search registry and run a query against a Django queryset.
 :::
 
+:::{grid-item-card} {octicon}`search` Query language
+:link: query
+:link-type: doc
+The search syntax, and the magic: a query string becomes a Q object and filters a queryset.
+:::
+
 :::{grid-item-card} {octicon}`download` Install
 :link: install
 :link-type: doc
 Add the core package or the admin integration to a Django project.
 :::
 
+:::{grid-item-card} {octicon}`book` API reference
+:link: api
+:link-type: doc
+search_query_to_q, parse, build_q, the field registry, and the admin mixin.
+:::
+
 :::{grid-item-card} {octicon}`package` Packages
 :link: packages/index
 :link-type: doc
 The core query language and the optional admin integration.
-:::
-
-:::{grid-item-card} {octicon}`book` Reference
-:link: packages/django-search-query/reference
-:link-type: doc
-The public API: parse, build_q, search_query_to_q, the field registry.
 :::
 
 :::{grid-item-card} {octicon}`tools` Project
@@ -84,7 +90,9 @@ when JavaScript is unavailable.
 :hidden:
 
 tutorial
+query
 install
+api
 packages/index
 project/index
 history

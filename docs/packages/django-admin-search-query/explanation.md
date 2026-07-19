@@ -9,7 +9,7 @@ ordinary version floor in its `pyproject.toml`
 (`django-search-query>=0.1.0a0`), the same way any other consumer of the
 query language would. There is no private coupling underneath that pin: the
 mixin only ever calls the same public surface documented in
-{doc}`../django-search-query/reference` --
+{doc}`../../api` --
 {func}`~django_search_query.search_query_to_q`,
 {exc}`~django_search_query.errors.QueryParseError`, and the highlighter that
 backs {doc}`colored-input`. Nothing in the core package imports or knows
@@ -32,7 +32,7 @@ search box through a per-admin `change_list.html` that calls
 hidden filter parameters, and help text stay whatever the installed Django
 version renders -- and only adds one thing after it: a hidden `data-*` config
 element carrying the URLs of the `search-tokens/` and `search-highlight/`
-endpoints (see {doc}`reference`), emitted only when `search_query_registry`
+endpoints (see {doc}`../../api`), emitted only when `search_query_registry`
 is set.
 
 `search-input.js` reads that config element on load, finds the stock
