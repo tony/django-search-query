@@ -74,9 +74,10 @@ They are still claims about real behavior — check them against a passing
 test under `tests/` before you change them.
 
 ```{note}
-The packages are early scaffolding. Until the tokenizer, parser, and
-builder exist, most usage examples are describing intended behavior;
-mark them as such rather than implying they run today.
+The tokenizer, parser, builder, field registry, and admin mixin ship,
+and the docs' `>>>` examples run as doctests. If you document behavior
+that is not yet implemented, still mark it as such rather than implying
+it runs today.
 ```
 
 ## What stays precise
