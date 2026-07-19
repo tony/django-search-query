@@ -33,6 +33,13 @@ watch-test:
         just _entr-warn
     fi
 
+# Run the colored-input dev server (admin/admin) with static files + autoreload
+[group: 'dev']
+dev:
+    uv run python manage.py migrate --run-syncdb
+    uv run python manage.py seed_dev
+    uv run python manage.py runserver
+
 # Build documentation
 [group: 'docs']
 build-docs:
