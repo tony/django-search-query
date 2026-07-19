@@ -63,18 +63,19 @@ def _operators_for_spec(spec: FieldSpec) -> list[str]:
 class SearchQueryAdminMixin(_Base):
     """Parse the changelist search box with the structured query language.
 
-    Subclasses configure the language via three class attributes (or override
-    the matching ``get_*`` hooks for dynamic behavior):
-
-    - ``search_query_registry`` -- the :class:`FieldRegistry` to validate
-      against (required for field-scoped queries to resolve).
-    - ``search_query_field_map`` -- maps field names to ORM lookup paths.
-    - ``search_query_default_fields`` -- ORM paths bare terms search; falls
-      back to the admin's ``search_fields`` when unset.
+    Subclasses configure the language through the three class attributes
+    below, or override the matching ``get_*`` hooks for dynamic behavior.
     """
 
+    #: The :class:`~django_search_query.registry.FieldRegistry` to validate
+    #: field-scoped queries against. Field-scoped queries only resolve once
+    #: this is set; while it is ``None`` the mixin leaves Django's own
+    #: ``search_fields`` behavior in place.
     search_query_registry: t.ClassVar[FieldRegistry | None] = None
+    #: Maps user-facing field names to ORM lookup paths.
     search_query_field_map: t.ClassVar[Mapping[str, str]] = {}
+    #: ORM paths that bare terms search, OR'd together. Falls back to the
+    #: admin's ``search_fields`` (minus lookup sigils) when left empty.
     search_query_default_fields: t.ClassVar[Sequence[str]] = ()
 
     # A per-admin changelist template (extending stock admin) renders the
@@ -141,9 +142,11 @@ class SearchQueryAdminMixin(_Base):
         Returns
         -------
         tuple[QuerySet, bool]
-            The filtered queryset and whether duplicates may result (always
-            ``False`` here: ``Q`` filtering introduces no joins that Django's
-            distinct handling needs to know about).
+            The filtered queryset and Django's ``may_have_duplicates`` flag.
+            It is ``False`` for the local-column field maps this integration
+            targets, where ``Q`` filtering adds no joins; a field map that
+            points at a to-many relation can introduce duplicate rows, which
+            the caller is responsible for collapsing with ``.distinct()``.
         """
         term = search_term.strip()
         registry = self.get_search_query_registry()

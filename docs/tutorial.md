@@ -5,7 +5,7 @@
 This tutorial builds one search-enabled queryset from a raw string. You
 describe which fields a query is allowed to touch, compile a query string
 into a Django {class}`~django.db.models.Q`, and run it against a real
-{class}`~django.db.models.QuerySet`. That is the whole path -- most projects
+{class}`~django.db.models.query.QuerySet`. That is the whole path -- most projects
 never need more than this.
 
 ## Describe your searchable fields
@@ -15,7 +15,7 @@ query string may touch, and what kind of value each one holds -- a plain
 string, an enum, a date. You declare that once with a
 {class}`~django_search_query.registry.FieldRegistry` built from
 {class}`~django_search_query.registry.FieldSpec` entries; the registry is
-what turns `status:open` into a validated lookup instead of an arbitrary
+what turns {dsq}`status:open` into a validated lookup instead of an arbitrary
 attribute access.
 
 A registry for an `Article` model with a title, a body, an author, a status,
@@ -67,7 +67,7 @@ phrase searches by default -- then returns a `Q` you pass straight to
 <Q: (AND: ('status__iexact', 'open'))>
 ```
 
-`status:open` matched the `status` field spec, so it compiled to an
+{dsq}`status:open` matched the `status` field spec, so it compiled to an
 `__iexact` lookup on the `status` column. Terms without a `field:` prefix
 would instead search every path listed in `default_fields`.
 
@@ -88,7 +88,7 @@ Article.objects.filter(q)
 
 This snippet is illustrative rather than an executed doctest: filtering a
 real queryset needs a migrated `Article` table, which the docs build does not
-provide. `tests/test_query_examples.py` pins the exact `Q` this `status:open`
+provide. `tests/test_query_examples.py` pins the exact `Q` this {dsq}`status:open`
 call compiles to, so the claim above stays checked against real behavior.
 
 ## Where to go next

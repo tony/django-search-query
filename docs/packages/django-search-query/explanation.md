@@ -46,21 +46,22 @@ opposite guarantee: it has to colorize every keystroke, including a query
 that is only half-typed -- an unterminated quote, a dangling `[`.
 
 For that, the package ships a second, presentation-only lexer,
-`highlight_query_spans`, that never raises. It runs one regex over the
+{func}`~django_search_query.highlight.highlight_query_spans`, that never
+raises. It runs one regex over the
 entire string, with a catch-all group absorbing any character it cannot
 classify, so the span list it returns always covers the source end to end.
 The two lexers share no code: keeping them independent means a change meant
 to loosen highlighting can never accidentally loosen what the parser
 accepts, and vice versa. It is also why `?` can color as a wildcard in the
 search box while the compiler still treats it as a literal character -- see
-{doc}`reference` for that boundary case, and
+{doc}`../../query` for that boundary case, and
 {doc}`../django-admin-search-query/colored-input` for the JavaScript port of
 this same lexer that colors the admin search box client-side.
 
 ## Lucene-inspired, not Lucene-compatible
 
 The syntax borrows familiar [Lucene] shapes -- field-scoped terms
-(`status:open`), quoted phrases, `AND`/`OR`/`NOT`, grouping, comparisons,
+({dsq}`status:open`), quoted phrases, `AND`/`OR`/`NOT`, grouping, comparisons,
 and ranges -- but the package does not claim full Lucene compatibility, and
 some gaps are permanent rather than pending. There is no fuzzy match
 (`~`), no boosting (`^`), and no proximity search. `?` is not a

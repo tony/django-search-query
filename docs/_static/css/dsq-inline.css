@@ -1,0 +1,10 @@
+/* Inline query-syntax highlighting emitted by the ``{dsq}`...``` role.
+
+   The role wraps its Pygments token spans in
+   ``<code class="highlight dsq-inline">``, so each token picks up the
+   theme's class-scoped ``.highlight .<token>`` colors (light and dark).
+   These rules keep the element rendering as ordinary inline code rather
+   than the block code container furo styles ``pre.highlight`` as. */
+code.dsq-inline {
+  padding: 0.1em 0.3em;
+}

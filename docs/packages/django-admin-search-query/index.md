@@ -23,8 +23,8 @@ Add `SearchQueryAdminMixin` to a `ModelAdmin`, using the worked `ArticleAdmin`
 example.
 :::
 
-:::{grid-item-card} {octicon}`book` Reference
-:link: reference
+:::{grid-item-card} {octicon}`book` API reference
+:link: ../../api
 :link-type: doc
 The `SearchQueryAdminMixin` API, its hooks, and the JSON endpoints behind the
 colored input.
@@ -50,7 +50,6 @@ autocomplete.
 :hidden:
 
 how-to
-reference
 explanation
 colored-input
 ```

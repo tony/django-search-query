@@ -14,22 +14,28 @@ optional [Django admin] integration built on top of it.
 Build a search registry and run a query against a Django queryset.
 :::
 
+:::{grid-item-card} {octicon}`search` Query language
+:link: query
+:link-type: doc
+The search syntax, and the magic: a query string becomes a Q object and filters a queryset.
+:::
+
 :::{grid-item-card} {octicon}`download` Install
 :link: install
 :link-type: doc
 Add the core package or the admin integration to a Django project.
 :::
 
+:::{grid-item-card} {octicon}`book` API reference
+:link: api
+:link-type: doc
+search_query_to_q, parse, build_q, the field registry, and the admin mixin.
+:::
+
 :::{grid-item-card} {octicon}`package` Packages
 :link: packages/index
 :link-type: doc
 The core query language and the optional admin integration.
-:::
-
-:::{grid-item-card} {octicon}`book` Reference
-:link: packages/django-search-query/reference
-:link-type: doc
-The public API: parse, build_q, search_query_to_q, the field registry.
 :::
 
 :::{grid-item-card} {octicon}`tools` Project
@@ -62,10 +68,13 @@ The admin integration installs separately; see {doc}`install`.
 
 {doc}`django-search-query <packages/django-search-query/index>` accepts a
 structured search string and translates it into Django-compatible query
-behavior, so an application gets a consistent search syntax without committing
-to a particular user interface, admin integration, or search backend. Its
-scope is intentionally loose: the syntax is Lucene-inspired without claiming
-full Lucene compatibility.
+behavior, so an application gets a consistent {doc}`search syntax <query>`
+without committing to a particular user interface, admin integration, or
+search backend. Under the hood that string becomes a
+{class}`~django.db.models.Q` you hand to any
+{class}`~django.db.models.query.QuerySet` -- see {doc}`query` for the syntax and the
+worked query-to-queryset examples. Its scope is intentionally loose: the
+syntax is Lucene-inspired without claiming full Lucene compatibility.
 
 {doc}`django-admin-search-query <packages/django-admin-search-query/index>`
 is an optional add-on that brings that same structured search to Django admin
@@ -84,7 +93,9 @@ when JavaScript is unavailable.
 :hidden:
 
 tutorial
+query
 install
+api
 packages/index
 project/index
 history
