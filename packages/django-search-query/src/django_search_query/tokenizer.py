@@ -189,9 +189,12 @@ def _emit_word(tokens: list[Token], raw: str, start: int) -> int:
                 Token(kind="term", value=remainder, start=start + colon_index + 1),
             )
         return start + len(raw)
-    keyword = _KEYWORDS.get(raw.upper())
+    # Keywords are case-sensitive (uppercase only), matching Lucene: a
+    # lowercase ``and``/``or`` is a search term, not an operator, so
+    # ``cats and dogs`` searches for three words rather than ``cats AND dogs``.
+    keyword = _KEYWORDS.get(raw)
     if keyword is not None:
-        tokens.append(Token(kind=keyword, value=raw.upper(), start=start))
+        tokens.append(Token(kind=keyword, value=raw, start=start))
         return start + len(raw)
     tokens.append(Token(kind="term", value=raw, start=start))
     return start + len(raw)

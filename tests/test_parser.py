@@ -95,6 +95,20 @@ def test_phrase_term_is_flagged() -> None:
     )
 
 
+def test_lowercase_and_is_a_search_term() -> None:
+    """Keywords are case-sensitive: lowercase ``and`` is a term, not an op."""
+    assert parse("cats and dogs", REGISTRY) == And(
+        children=(Term(value="cats"), Term(value="and"), Term(value="dogs")),
+    )
+
+
+def test_uppercase_and_is_the_operator() -> None:
+    """Uppercase ``AND`` is the boolean operator (two operands, not three)."""
+    assert parse("cats AND dogs", REGISTRY) == And(
+        children=(Term(value="cats"), Term(value="dogs")),
+    )
+
+
 def test_field_alias_resolves_to_canonical_name() -> None:
     """An aliased field resolves to its canonical name and kind."""
     assert parse("by:tony", REGISTRY) == Field(
