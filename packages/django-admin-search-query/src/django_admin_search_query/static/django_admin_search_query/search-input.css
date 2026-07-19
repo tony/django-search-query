@@ -62,6 +62,9 @@
   position: relative;
   z-index: 2;
   color: transparent;
+  /* Safari honors -webkit-text-fill-color over `color` for glyph fill, so set
+     both to keep the real text hidden under the overlay on WebKit. */
+  -webkit-text-fill-color: transparent;
   background: var(--dsq-bg);
   caret-color: var(--dsq-fg);
   resize: none;
