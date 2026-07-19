@@ -6,17 +6,22 @@ The workspace ships two independently-installable, independently-versioned
 packages. The core query language stands on its own; the admin integration is
 opt-in and depends on it through a loose version floor.
 
-## Core
+::::{grid} 1 1 2 2
+:gutter: 2 2 3 3
 
-- [`django-search-query`](django-search-query/index.md) -- structured,
-  Lucene-inspired search query language that compiles to Django ORM lookups.
-  No UI, admin, or backend assumptions.
+:::{grid-item-card} {octicon}`package` django-search-query
+:link: django-search-query/index
+:link-type: doc
+The core query language: compiles a search string to Django ORM `Q` objects. No UI, admin, or backend assumptions.
+:::
 
-## Django admin
+:::{grid-item-card} {octicon}`browser` django-admin-search-query
+:link: django-admin-search-query/index
+:link-type: doc
+Optional Django admin integration built on the core, with a vanilla-JavaScript search input. Depends on it through a loose version floor.
+:::
 
-- [`django-admin-search-query`](django-admin-search-query/index.md) --
-  structured search on Django admin changelist pages, plus an optional
-  vanilla-JavaScript search input. Built on `django-search-query`.
+::::
 
 ```{toctree}
 :caption: Packages
