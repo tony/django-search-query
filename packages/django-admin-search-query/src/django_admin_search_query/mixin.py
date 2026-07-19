@@ -83,7 +83,9 @@ class SearchQueryAdminMixin(_Base):
         """Assets that progressively enhance the changelist search box."""
 
         js = ("django_admin_search_query/search-input.js",)
-        css = {"all": ("django_admin_search_query/search-input.css",)}  # noqa: RUF012
+        css: t.ClassVar[dict[str, tuple[str, ...]]] = {
+            "all": ("django_admin_search_query/search-input.css",),
+        }
 
     def get_search_query_registry(self) -> FieldRegistry | None:
         """Return the registry used to validate field names."""
@@ -249,19 +251,20 @@ class SearchQueryAdminMixin(_Base):
         names -- ``<app>_<model>_search_tokens`` / ``..._search_highlight`` --
         out of the template, which only sees two ready-made URL strings.
         """
-        app_label, model_name = self.opts.app_label, self.opts.model_name
-        current_app = self.admin_site.name
-        context = {
-            **(extra_context or {}),
-            "search_tokens_url": reverse(
+        context: dict[str, t.Any] = {**(extra_context or {})}
+        # Only enhance admins that actually configure the query language; without
+        # a registry the search box stays stock admin (no data-* hooks emitted).
+        if self.get_search_query_registry() is not None:
+            app_label, model_name = self.opts.app_label, self.opts.model_name
+            current_app = self.admin_site.name
+            context["search_tokens_url"] = reverse(
                 f"admin:{app_label}_{model_name}_search_tokens",
                 current_app=current_app,
-            ),
-            "search_highlight_url": reverse(
+            )
+            context["search_highlight_url"] = reverse(
                 f"admin:{app_label}_{model_name}_search_highlight",
                 current_app=current_app,
-            ),
-        }
+            )
         return super().changelist_view(request, context)
 
 
