@@ -16,6 +16,15 @@ _Upcoming changes will be written here._
 
 <!-- END PLACEHOLDER - ADD NEW CHANGELOG ENTRIES BELOW THIS LINE -->
 
+### Documentation
+
+#### Tutorials, reference, and highlighted query examples (#4)
+
+The docs are now a full guided site for both packages: a tutorial that runs a
+search against a real queryset, how-to guides, an API reference, and
+explanation pages. Query examples are syntax-highlighted, and an interactive
+install picker shows the matching `pip`/`uv` command for each package.
+
 ## django-search-query 0.1.0a0 (2026-07-19)
 
 django-search-query 0.1.0a0 is the first alpha of the workspace, shipping the
