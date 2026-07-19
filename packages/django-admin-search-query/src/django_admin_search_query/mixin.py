@@ -84,9 +84,17 @@ class SearchQueryAdminMixin(_Base):
     change_list_template = "django_admin_search_query/change_list.html"
 
     class Media:
-        """Assets that progressively enhance the changelist search box."""
+        """Assets that progressively enhance the changelist search box.
 
-        js = ("django_admin_search_query/search-input.js",)
+        ``search-lexer.js`` (the JS port of the Python highlighter) loads
+        before ``search-input.js``, which reads it as ``window.DSQLexer`` to
+        color the input client-side without a per-keystroke request.
+        """
+
+        js = (
+            "django_admin_search_query/search-lexer.js",
+            "django_admin_search_query/search-input.js",
+        )
         css: t.ClassVar[dict[str, tuple[str, ...]]] = {
             "all": ("django_admin_search_query/search-input.css",),
         }
@@ -217,11 +225,13 @@ class SearchQueryAdminMixin(_Base):
     def search_highlight_view(self, request: HttpRequest) -> HttpResponse:
         """Return registry-aware highlight spans for ``?q=`` as JSON.
 
-        The single source of truth for the colored input: the server lexes the
+        The Python source of truth for the colored input: the server lexes the
         query with :func:`~django_search_query.highlight.highlight_query_spans`
-        and upgrades registry-rejected fields/values to the ``error`` role, so
-        the JS renders exactly what the Python engine sees -- no client-side
-        tokenizer to drift.
+        and upgrades registry-rejected fields/values to the ``error`` role. The
+        enhanced input no longer calls this per keystroke (``search-lexer.js``
+        colors client-side); it is retained as a no-JS fallback and as the
+        canonical spans the ``tests/test_lexer_parity.py`` corpus pins the JS
+        port against.
         """
         if not self.has_view_permission(request):
             raise PermissionDenied
