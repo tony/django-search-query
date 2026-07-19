@@ -2,9 +2,10 @@
 
 # Releasing
 
-Each package is versioned and released **independently**. A release touches
-one package's version and its section of the shared root changelog without
-requiring changes to the other.
+Each package is versioned and released **independently**. A release bumps one
+package's version and records its changes in the shared root changelog -- which
+consolidates both packages under one set of sections -- without touching the
+other package.
 
 The version literal lives in two places per package:
 

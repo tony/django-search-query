@@ -311,9 +311,9 @@ Commit types: feat, fix, refactor, docs, chore, test, style, py(deps), py(deps[d
 
 ## Changelog Conventions
 
-The workspace keeps a single root `CHANGES` (with a matching `MIGRATION`), rendered on the docs changelog page. The two packages version independently, so within that one file each keeps its own `## <package> X.Y.Z` release sections. These rules apply when authoring entries. Modeled on Django's release-notes shape — deliverables get titles and prose, not bullets.
+The workspace keeps a single root `CHANGES` (with a matching `MIGRATION`), rendered on the docs changelog page. Both packages are consolidated under one set of release sections headed by `django-search-query` (the primary package); a deliverable specific to `django-admin-search-query` names it in its `####` heading, mirroring gp-sphinx. These rules apply when authoring entries. Modeled on Django's release-notes shape — deliverables get titles and prose, not bullets.
 
-**Release entry boilerplate.** Every release header is `## <package> X.Y.Z (YYYY-MM-DD)` (e.g. `## django-search-query 0.1.0 (2026-01-01)`), so the one file interleaves both packages' releases. `CHANGES` opens with a `## <package> X.Y.Z (unreleased)` placeholder block for each package, fenced by `<!-- KEEP THIS PLACEHOLDER ... -->` and `<!-- END PLACEHOLDER ... -->` HTML comments — new release entries land immediately below the END marker, never above it.
+**Release entry boilerplate.** Every release header is `## django-search-query X.Y.Z (YYYY-MM-DD)` (e.g. `## django-search-query 0.1.0 (2026-01-01)`). `CHANGES` opens with a single `## django-search-query X.Y.Z (unreleased)` placeholder block, fenced by `<!-- KEEP THIS PLACEHOLDER ... -->` and `<!-- END PLACEHOLDER ... -->` HTML comments — new release entries land immediately below the END marker, never above it.
 
 **Open with a multi-sentence lead paragraph.** Plain prose, no italic. Open with the version as sentence subject (*"django-search-query X.Y.Z ships …"*) so the lead is self-contained when excerpted. Two to four sentences telling the reader what shipped and who cares — user-visible takeaways, not internal mechanism. Cross-reference detail docs with `{ref}` to keep the lead compact.
 
