@@ -112,9 +112,7 @@
 
   /* ---- the widget -------------------------------------------------------- */
 
-  function enhance(input) {
-    var highlightUrl = input.dataset.highlightUrl;
-    var tokensUrl = input.dataset.searchTokensUrl;
+  function enhance(input, highlightUrl, tokensUrl) {
     if (!highlightUrl) {
       return;
     }
@@ -156,8 +154,14 @@
     wrap.appendChild(overlay);
     wrap.appendChild(editor);
     wrap.appendChild(dropdown);
-    // Replacing the <input> drops its name="q", so only the textarea submits.
-    input.replaceWith(wrap);
+    // Neutralize the original input -- keep it in the DOM (so anything holding a
+    // #searchbar reference isn't left with a detached node) but inert, its
+    // id/name moved to the textarea, which becomes the sole ?q= submitter.
+    input.removeAttribute("id");
+    input.removeAttribute("name");
+    input.hidden = true;
+    input.tabIndex = -1;
+    input.parentNode.insertBefore(wrap, input.nextSibling);
 
     var state = {
       seq: 0, // monotonically-increasing request id; stale replies are ignored
@@ -374,9 +378,19 @@
   }
 
   function init() {
-    var inputs = document.querySelectorAll("input[data-dsq-search]");
-    for (var i = 0; i < inputs.length; i++) {
-      enhance(inputs[i]);
+    // The config element (rendered by the non-forking change_list template)
+    // carries the endpoint URLs; enhance the stock admin #searchbar in place so
+    // Django's own search form -- facets, hidden params, help -- is inherited.
+    var configs = document.querySelectorAll("[data-dsq-search]");
+    for (var i = 0; i < configs.length; i++) {
+      var input = document.getElementById("searchbar");
+      if (input) {
+        enhance(
+          input,
+          configs[i].dataset.highlightUrl,
+          configs[i].dataset.searchTokensUrl,
+        );
+      }
     }
   }
 
