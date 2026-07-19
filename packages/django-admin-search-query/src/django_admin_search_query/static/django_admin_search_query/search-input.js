@@ -234,9 +234,10 @@
 
   // ~150 LOC of the combobox-nav contract: aria-activedescendant navigation
   // with DOM focus never leaving the input, role=option + unique id +
-  // aria-selected on the active option only, scrollIntoView, and a
-  // `combobox-commit` event the consumer handles (this class never mutates
-  // input.value). start()/stop() are gated on the listbox being open.
+  // aria-selected on the active option only, scrollIntoView, a `combobox-select`
+  // event on highlight and a `combobox-commit` event on choose that the consumer
+  // handles (this class never mutates input.value). start()/stop() are gated on
+  // the listbox being open.
   function Combobox(input, list) {
     this.input = input;
     this.list = list;
@@ -336,6 +337,7 @@
         option.setAttribute("aria-selected", "true");
         this.input.setAttribute("aria-activedescendant", option.id);
         option.scrollIntoView({ block: "nearest", inline: "nearest" });
+        fireSelect(option);
       } else {
         option.removeAttribute("aria-selected");
       }
@@ -380,7 +382,14 @@
         }
         break;
       case "Escape":
-        combobox.input.dispatchEvent(new CustomEvent("combobox-cancel"));
+        // Two-step, faithful to combobox-nav: the first Escape clears the
+        // active option (deselect, list stays open); a second Escape with
+        // nothing active closes the list via combobox-cancel.
+        if (combobox.selectedIndex() >= 0) {
+          combobox.clearSelection();
+        } else {
+          combobox.input.dispatchEvent(new CustomEvent("combobox-cancel"));
+        }
         event.preventDefault();
         break;
       case "ArrowDown":
@@ -414,6 +423,13 @@
 
   function fireCommit(target) {
     target.dispatchEvent(new CustomEvent("combobox-commit", { bubbles: true }));
+  }
+
+  // Vendor-faithful highlight signal: combobox-nav emits `combobox-select` on
+  // the newly-active option as you navigate, so a consumer can react to the
+  // highlight (preview, live region) without DOM focus ever leaving the input.
+  function fireSelect(target) {
+    target.dispatchEvent(new Event("combobox-select", { bubbles: true }));
   }
 
   /* ---- the widget -------------------------------------------------------- */
