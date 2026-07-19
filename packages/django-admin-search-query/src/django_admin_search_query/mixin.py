@@ -14,7 +14,7 @@ import typing as t
 from django_search_query import QueryParseError, search_query_to_q
 
 if t.TYPE_CHECKING:
-    from collections.abc import Mapping, Sequence
+    from collections.abc import Iterable, Mapping, Sequence
 
     from django.contrib.admin import ModelAdmin
     from django.db.models import Model, QuerySet
@@ -29,6 +29,11 @@ else:
     _Base = object
 
 logger = logging.getLogger(__name__)
+
+
+def _strip_search_field_prefixes(search_fields: Iterable[str]) -> tuple[str, ...]:
+    """Strip Django ``search_fields`` lookup sigils (``^``, ``=``, ``@``, ``$``)."""
+    return tuple(field.lstrip("^=@$") for field in search_fields)
 
 
 class SearchQueryAdminMixin(_Base):
@@ -57,8 +62,15 @@ class SearchQueryAdminMixin(_Base):
         return self.search_query_field_map
 
     def get_search_query_default_fields(self) -> Sequence[str]:
-        """Return ORM paths for bare terms, defaulting to ``search_fields``."""
-        return self.search_query_default_fields or tuple(self.search_fields)
+        """Return ORM paths for bare terms, defaulting to ``search_fields``.
+
+        Django ``search_fields`` may carry lookup-prefix sigils (``^`` / ``=``
+        / ``@`` / ``$``); strip them so bare-term ``icontains`` lookups stay
+        valid.
+        """
+        if self.search_query_default_fields:
+            return self.search_query_default_fields
+        return _strip_search_field_prefixes(self.search_fields)
 
     def get_search_results(
         self,

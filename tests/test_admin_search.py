@@ -9,12 +9,21 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils import timezone
 
+from django_admin_search_query.mixin import _strip_search_field_prefixes
 from test_app.admin import ArticleAdmin
 from test_app.models import Article
 
 if t.TYPE_CHECKING:
     from django.test import Client
     from django.test.client import RequestFactory
+
+
+def test_strip_search_field_prefixes() -> None:
+    """Django ``search_fields`` sigils are stripped for bare-term defaults."""
+    stripped = _strip_search_field_prefixes(
+        ("^title", "=body", "@content", "$slug", "author"),
+    )
+    assert stripped == ("title", "body", "content", "slug", "author")
 
 
 @pytest.fixture
