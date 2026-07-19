@@ -17,6 +17,20 @@ as ``(NOT a) AND b``. Adjacent primaries (``a b``) are treated as an implicit
 ``AND`` operator sharing ``AND``'s binding power, so precedence between
 implicit and explicit conjunction is uniform. Grouping is just a primary that
 recurses at the lowest binding power.
+
+Grammar (the precedence-climbing loop realizes this; a JavaScript
+re-implementation for the search input can mirror it 1:1)::
+
+    query       := expr
+    expr        := prefix (infix prefix)*
+    infix       := "OR" | "AND" | <juxtaposition>   # juxtaposition == AND
+    prefix      := ("NOT" | "-" | "+")? primary
+    primary     := "(" expr ")" | field | term
+    field       := IDENT ":" (comparison | range | value | "*")
+    comparison  := (">" | ">=" | "<" | "<=") TERM
+    range       := ("[" | "{") TERM "TO" TERM ("]" | "}")
+    value       := TERM
+    term        := TERM | PHRASE
 """
 
 from __future__ import annotations
