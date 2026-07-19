@@ -36,8 +36,10 @@
   width: 40ch;
   max-width: 100%;
   font-family: inherit;
-  font-size: 0.8125rem;
-  line-height: 1.4;
+  /* Match Django admin's text inputs so the box is the same size as its
+     siblings (the Search button, list filters). */
+  font-size: 0.875rem;
+  line-height: 1.5;
   padding: 5px 6px;
   border: 1px solid var(--dsq-border);
   border-radius: 4px;
@@ -53,7 +55,9 @@
   z-index: 1;
   color: var(--dsq-value);
   border-color: transparent;
-  background: transparent;
+  /* The overlay sits BEHIND the transparent textarea and carries the box
+     background, so its colored spans show through the see-through editor. */
+  background: var(--dsq-bg);
   pointer-events: none;
   user-select: none;
 }
@@ -65,7 +69,9 @@
   /* Safari honors -webkit-text-fill-color over `color` for glyph fill, so set
      both to keep the real text hidden under the overlay on WebKit. */
   -webkit-text-fill-color: transparent;
-  background: var(--dsq-bg);
+  /* Transparent so the overlay's colored spans behind it stay visible; the
+     background lives on the overlay, not here. */
+  background: transparent;
   caret-color: var(--dsq-fg);
   resize: none;
   height: auto;
