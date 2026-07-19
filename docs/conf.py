@@ -82,3 +82,11 @@ from django_search_query.registry import FieldRegistry, FieldSpec
 
 # Keep django_search_query imported so linkcode can resolve its source.
 _ = django_search_query
+
+
+def setup(app: object) -> dict[str, bool]:
+    """Register the ``dsq`` query-language lexer for MyST code fences."""
+    from django_search_query.pygments_lexer import DjangoSearchQueryLexer
+
+    app.add_lexer("dsq", DjangoSearchQueryLexer)  # ty: ignore[unresolved-attribute]
+    return {"parallel_read_safe": True, "parallel_write_safe": True}
