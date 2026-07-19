@@ -459,6 +459,14 @@
     editor.style.borderStyle = searchbarBorderStyle;
     editor.style.borderColor = searchbarBorderColor;
     editor.style.caretColor = searchbarColor;
+    // Force the overlay-critical transparency inline. Admin base.css styles
+    // `input[type=text]` (specificity 0,0,1,1) with an opaque `background-color`
+    // and a themed `color`, outranking the `.dsq-editor` class rule (0,0,1,0) --
+    // the editor would otherwise paint over the mirror behind it. Inline styles
+    // outrank any selector, so this also survives themed admins.
+    editor.style.background = "transparent";
+    editor.style.color = "transparent";
+    editor.style.webkitTextFillColor = "transparent";
 
     wrap.appendChild(mirror);
     wrap.appendChild(editor);
