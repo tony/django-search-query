@@ -14,7 +14,7 @@ from test_app.admin import ARTICLE_FIELD_MAP, ARTICLE_REGISTRY
 _DEFAULT_FIELDS = ("title", "body")
 
 # (query, expected repr(Q)). Filled from the real reprs observed by running
-# the test (see tests/test_query_examples.py history); never hand-written.
+# the test; never hand-written.
 CASES: list[tuple[str, str]] = [
     ("status:open", "<Q: (AND: ('status__iexact', 'open'))>"),
     ('title:"exact phrase"', "<Q: (AND: ('title__icontains', 'exact phrase'))>"),

@@ -24,7 +24,6 @@ packages_root = project_root / "packages"
 sys.path.insert(0, str(project_root))
 for _pkg in sorted(packages_root.glob("*/src")):
     sys.path.insert(0, str(_pkg))
-sys.path.insert(0, str(cwd / "_ext"))
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tests.settings")
 django.setup()
