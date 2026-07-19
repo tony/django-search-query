@@ -118,6 +118,22 @@ def test_field_star_is_exists() -> None:
     assert parse("title:*", REGISTRY) == Exists(field="title")
 
 
+def test_enum_rejects_value_outside_allowed_set() -> None:
+    """An enum value outside ``enum_values`` is rejected at parse time."""
+    with pytest.raises(QueryParseError) as excinfo:
+        parse("status:banana", REGISTRY)
+    assert "banana" in str(excinfo.value)
+
+
+def test_enum_accepts_allowed_value() -> None:
+    """An enum value inside ``enum_values`` parses normally."""
+    assert parse("status:draft", REGISTRY) == Field(
+        field="status",
+        value="draft",
+        kind="enum",
+    )
+
+
 def test_comparison_parses_to_cmp() -> None:
     """``field:>value`` parses to a ``Cmp`` node."""
     assert parse("created:>=2024-01-01", REGISTRY) == Cmp(

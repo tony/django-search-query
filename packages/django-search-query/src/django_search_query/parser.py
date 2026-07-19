@@ -204,6 +204,17 @@ class _Parser:
             _ = self._advance()
             if token.value == "*":
                 return Exists(field=spec.name)
+            if (
+                spec.kind == "enum"
+                and spec.enum_values
+                and token.value not in spec.enum_values
+            ):
+                allowed = ", ".join(spec.enum_values)
+                message = (
+                    f"invalid value {token.value!r} for {spec.name!r}; "
+                    f"allowed: {allowed}"
+                )
+                raise QueryParseError(message, position=token.start)
             return Field(field=spec.name, value=token.value, kind=spec.kind)
         message = f"expected a value after {spec.name}:, got {token.kind}"
         raise QueryParseError(message, position=token.start)
