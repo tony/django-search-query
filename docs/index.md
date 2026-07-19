@@ -39,23 +39,37 @@ Per-package release notes.
 
 The core query language:
 
+::::{tab-set}
+:::{tab-item} pip
+:sync: pip
 ```console
 $ pip install django-search-query
 ```
-
+:::
+:::{tab-item} uv
+:sync: uv
 ```console
 $ uv add django-search-query
 ```
+:::
+::::
 
 The optional Django admin integration (pulls in the core package):
 
+::::{tab-set}
+:::{tab-item} pip
+:sync: pip
 ```console
 $ pip install django-admin-search-query
 ```
-
+:::
+:::{tab-item} uv
+:sync: uv
 ```console
 $ uv add django-admin-search-query
 ```
+:::
+::::
 
 See {doc}`quickstart` for developmental releases and next steps.
 
