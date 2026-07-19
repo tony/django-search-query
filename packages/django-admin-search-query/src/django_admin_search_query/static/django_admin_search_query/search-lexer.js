@@ -60,11 +60,27 @@
   // must not swallow newlines (whitespace already owns them).
   var TOKEN_RE = new RegExp(PATTERN, "gu");
 
-  // `misc` (an unclassifiable single char) reads as a value so a stray symbol
-  // colors like the term it sits in rather than vanishing -- mirrors Python.
-  var MISC_ROLE = "value";
+  // Group-name -> role map (declarative, frozen). Every regex alternative is a
+  // named group whose role is its own name, except `misc` -- an unclassifiable
+  // single char -- which reads as a `value` so a stray symbol colors like the
+  // term it sits in rather than vanishing (mirrors Python).
+  var GROUP_ROLES = Object.freeze({
+    whitespace: "whitespace",
+    phrase: "phrase",
+    field: "field",
+    keyword: "keyword",
+    operator: "operator",
+    punct: "punct",
+    negation: "negation",
+    wildcard: "wildcard",
+    value: "value",
+    misc: "value",
+  });
 
-  var HIGHLIGHT_ROLES = [
+  // Every role the highlighter can emit, including the registry-applied `error`
+  // that no regex group produces. Frozen: downstream (CSS class names, tests)
+  // treats this as the stable role vocabulary.
+  var HIGHLIGHT_ROLES = Object.freeze([
     "whitespace",
     "field",
     "punct",
@@ -75,7 +91,7 @@
     "phrase",
     "value",
     "error",
-  ];
+  ]);
 
   function codePointLength(text) {
     // Python offsets are code-point indices; JS string indices are UTF-16.
@@ -94,10 +110,10 @@
     for (var match of matches) {
       var text = match[0];
       var groups = match.groups;
-      var role = MISC_ROLE;
+      var role = GROUP_ROLES.misc;
       for (var name in groups) {
         if (groups[name] !== undefined) {
-          role = name === "misc" ? MISC_ROLE : name;
+          role = GROUP_ROLES[name];
           break;
         }
       }
