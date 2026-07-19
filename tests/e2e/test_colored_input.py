@@ -1,4 +1,4 @@
-"""Playwright end-to-end test for the server-authoritative colored input.
+"""Playwright end-to-end test for the client-highlighted colored input.
 
 Excluded from the fast lane (the ``e2e`` marker is skipped unless ``-m e2e``).
 Run with a browser installed::
@@ -7,14 +7,16 @@ Run with a browser installed::
     DJANGO_SETTINGS_MODULE=tests.settings_e2e uv run pytest -m e2e
 
 The browser-free proof of the same contract lives in
-``tests/test_search_endpoints.py`` and always runs.
+``tests/test_search_endpoints.py`` and always runs; the Python<->JS lexer
+parity that underwrites the client-side coloring lives in
+``tests/test_lexer_parity.py``.
 
 SPIKE: chromium does not launch in this bakeoff environment -- the Playwright
 sync API is greenlet-based and hangs indefinitely under the free-threaded
 CPython 3.14t build in use here (a bare ``p.chromium.launch()`` never returns).
-The assertions below are written against the real DOM the widget builds
-(``textarea.dsq-editor``, ``.dsq-token--field``, ``.dsq-dropdown``) and the
-``search-highlight`` response, so the test is correct and should pass on a
+The assertions below are written against the real DOM the widget builds (native
+``input.dsq-editor``, the ``.dsq-mirror`` overlay, ``.dsq-token--field`` spans,
+and the ``.dsq-listbox`` combobox), so the test is correct and should pass on a
 standard CPython build with the browser installed; it simply cannot be executed
 here.
 """
@@ -48,26 +50,31 @@ def test_colored_input_highlights_and_autocompletes(
     live_server: LiveServer,
     admin_user: AbstractUser,
 ) -> None:
-    """Typing a query colors it via the server and offers enum autocomplete."""
+    """Typing a query colors it client-side and offers enum autocomplete."""
     _login(page, live_server.url, admin_user.get_username())
 
     page.goto(live_server.url + reverse("admin:test_app_article_changelist"))
-    editor = page.wait_for_selector("textarea.dsq-editor")
+    editor = page.wait_for_selector("input.dsq-editor")
     assert editor is not None
 
-    # Typing debounces into a highlight request; capture it to prove the
-    # server -- not any JS tokenizer -- produced the spans.
-    with page.expect_response(lambda r: "search-highlight" in r.url) as caught:
-        editor.type('status:open author:tony "phrase" NOT draft')
-    assert caught.value.ok
-
-    page.wait_for_selector(".dsq-token--field")
+    # No network round-trip: coloring is produced by search-lexer.js, so the
+    # field-scoped tokens appear in the mirror as soon as the value changes.
+    editor.fill('status:open author:tony "phrase" NOT draft')
+    page.wait_for_selector(".dsq-mirror .dsq-token--field")
     # Exactly two field-scoped tokens: ``status:`` and ``author:``.
-    assert page.locator(".dsq-token--field").count() == 2
+    assert page.locator(".dsq-mirror .dsq-token--field").count() == 2
 
-    # Autocomplete: after ``status:`` the dropdown lists the enum values.
-    editor.fill("")
-    editor.type("status:")
-    page.wait_for_selector(".dsq-dropdown:not([hidden]) .dsq-option")
+    # An out-of-enum value is flagged ``error`` entirely on the client, using
+    # the schema fetched once from ``search-tokens/``.
+    editor.fill("status:bogus")
+    page.wait_for_selector(".dsq-mirror .dsq-token--error")
+    assert page.locator(".dsq-mirror .dsq-token--error").inner_text() == "bogus"
+
+    # Autocomplete: after ``status:`` the listbox lists the enum values, with
+    # DOM focus never leaving the input (aria-activedescendant navigation).
+    editor.fill("status:")
+    page.wait_for_selector(".dsq-listbox:not([hidden]) .dsq-option")
     options = page.locator(".dsq-option").all_inner_texts()
     assert any("status:open" in option for option in options)
+    assert editor.get_attribute("role") == "combobox"
+    assert editor.get_attribute("aria-expanded") == "true"

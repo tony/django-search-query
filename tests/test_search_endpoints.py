@@ -109,23 +109,31 @@ def test_changelist_ships_enhanced_input_and_assets(admin_client: Client) -> Non
     assert "data-dsq-search" in html
     assert f'data-highlight-url="{HIGHLIGHT_URL}"' in html
     assert f'data-search-tokens-url="{TOKENS_URL}"' in html
+    # The client-side lexer loads before the widget that reads it.
+    assert "search-lexer.js" in html
     assert "search-input.js" in html
     assert "search-input.css" in html
+    assert html.index("search-lexer.js") < html.index("search-input.js")
 
 
 @pytest.mark.django_db
 def test_colored_input_integration(admin_client: Client) -> None:
-    """End-to-end (browser-free) proof of the whole server contract.
+    """End-to-end (browser-free) proof of the server contract behind the input.
 
-    Mirrors the Playwright flow without a browser: the changelist advertises
-    the endpoints on the input, and both endpoints answer with the JSON the
-    JavaScript consumes -- including an ``error`` span for a bad enum value.
+    Coloring runs client-side (``search-lexer.js``), so the browser-verifiable
+    surface is: the changelist advertises the token endpoint on the input and
+    ships the lexer asset, the token endpoint returns the schema the client
+    lexes against, and the highlight endpoint (the no-JS fallback and the
+    Python side of the parity contract) still answers with ``error``-aware
+    spans for the same query.
     """
     html = admin_client.get(CHANGELIST_URL).content.decode()
-    assert "data-dsq-search" in html and "search-input.js" in html
+    assert "data-dsq-search" in html
+    assert "search-lexer.js" in html and "search-input.js" in html
 
     schema = admin_client.get(TOKENS_URL).json()
-    assert any(field["name"] == "status" for field in schema["fields"])
+    status = next(field for field in schema["fields"] if field["name"] == "status")
+    assert status["enum_values"] == ["open", "draft", "closed"]
 
     highlighted = admin_client.get(
         HIGHLIGHT_URL,
