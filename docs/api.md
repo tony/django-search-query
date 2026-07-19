@@ -31,6 +31,27 @@ inspect or transform the AST before compiling.
 .. autoclass:: django_search_query.errors.QueryParseError
 ```
 
+### Highlighting
+
+A second, presentation-only lexer colorizes a query for a live search box.
+Unlike the parser it never raises -- it tokenizes even a half-typed query so
+every keystroke can be highlighted -- which is why it is a separate function
+rather than a mode of {func}`~django_search_query.parse`. See
+{doc}`the pipeline <packages/django-search-query/explanation>` for why the two
+lexers stay independent, and
+{doc}`colored-input <packages/django-admin-search-query/colored-input>` for the
+JavaScript port that colors the admin search box.
+
+```{eval-rst}
+.. autofunction:: django_search_query.highlight.highlight_query_spans
+
+.. autofunction:: django_search_query.highlight.apply_registry_errors
+
+.. autoclass:: django_search_query.highlight.Span
+
+.. autodata:: django_search_query.highlight.HIGHLIGHT_ROLES
+```
+
 ## Admin
 
 `django-admin-search-query` (optional).
@@ -59,7 +80,8 @@ the hooks read the class attributes straight through, and
 {meth}`~django_admin_search_query.mixin.SearchQueryAdminMixin.get_search_query_default_fields`
 falls back to {attr}`~django.contrib.admin.ModelAdmin.search_fields` (stripped
 of Django's lookup sigils -- `^`, `=`, `@`, `$`) whenever
-`search_query_default_fields` is left empty:
+{attr}`~django_admin_search_query.mixin.SearchQueryAdminMixin.search_query_default_fields`
+is left empty:
 
 ```{doctest}
 >>> from django_admin_search_query.mixin import SearchQueryAdminMixin
@@ -75,9 +97,12 @@ returns `super().get_search_results(...)` unchanged -- Django's own
 `search_fields` behavior -- whenever the term is blank, no registry is
 configured, or {exc}`~django_search_query.errors.QueryParseError` is raised
 while compiling it; otherwise it returns a filtered
-{class}`~django.db.models.QuerySet`: `queryset.filter(q), False`. The `bool` is
-always `False`: filtering by {class}`~django.db.models.Q` here introduces no
-joins that would make Django's duplicate-row handling necessary.
+{class}`~django.db.models.query.QuerySet`: `queryset.filter(q), False`. That second
+element is Django's `may_have_duplicates` flag; it is `False` for the
+local-column field maps this integration targets, where filtering by
+{class}`~django.db.models.Q` adds no joins. A field map that instead points at
+a to-many relation can introduce duplicate rows -- collapse them with
+`.distinct()` in that case.
 
 ### JSON endpoints
 
@@ -88,14 +113,16 @@ additionally checking
 {meth}`~django.contrib.admin.ModelAdmin.has_view_permission` before responding:
 
 - `search-tokens/` (named `<app>_<model>_search_tokens`) -- the registry's
-  fields, kinds, operators, enum values, and default fields, as
-  {class}`~django.http.JsonResponse`.
+  fields, kinds, operators, enum values, and field aliases, plus the default
+  fields, as {class}`~django.http.JsonResponse`.
 - `search-highlight/` (named `<app>_<model>_search_highlight`) -- the highlight
   spans for a `?q=` query string, as {class}`~django.http.JsonResponse`.
 
 Both endpoints are always registered once the mixin is mounted. The changelist
 template only *advertises* them -- as `data-*` attributes the colored input
-reads -- when `search_query_registry` is configured; without a registry, the
-search box renders as stock admin with no extra markup. See
+reads -- when
+{attr}`~django_admin_search_query.mixin.SearchQueryAdminMixin.search_query_registry`
+is configured; without a registry, the search box renders as stock admin with
+no extra markup. See
 {doc}`colored-input <packages/django-admin-search-query/colored-input>` for the
 exact JSON shape of each endpoint and how the JavaScript input consumes it.

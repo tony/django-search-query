@@ -5,13 +5,16 @@
 You give your users a real search box -- field-scoped terms, quoted phrases,
 boolean logic -- and {func}`~django_search_query.search_query_to_q` turns what
 they type into a Django {class}`~django.db.models.Q`. Pass that to any
-{class}`~django.db.models.QuerySet` and the ORM does the rest: **string in,
+{class}`~django.db.models.query.QuerySet` and the ORM does the rest: **string in,
 queryset out**. A field map plus that one call covers most sites, so if the
 defaults fit you can stop after the {doc}`tutorial`.
 
 The syntax is Lucene-*inspired*, not Lucene-compatible -- familiar forms mostly
-just work, and half-typed or unparseable input degrades to a match instead of
-raising. Underneath, a tokenizer lexes the string, {func}`~django_search_query.parse`
+just work. A query the parser cannot read raises
+{exc}`~django_search_query.errors.QueryParseError`; catch it to fall back to a
+plain search, which is exactly what the
+{doc}`admin integration <packages/django-admin-search-query/index>` does.
+Underneath, a tokenizer lexes the string, {func}`~django_search_query.parse`
 builds an AST, and {func}`~django_search_query.build_q` compiles it to a `Q`;
 {doc}`the pipeline <packages/django-search-query/explanation>` walks that chain.
 
@@ -21,12 +24,12 @@ Seed a handful of articles:
 
 | title | status | author | created |
 | --- | --- | --- | --- |
-| Launch plan | open | tony | 2024-06-01 |
-| Draft memo | draft | jane | 2024-03-15 |
 | Closed ticket | closed | tony | 2023-11-20 |
+| Draft memo | draft | jane | 2024-03-15 |
+| Launch plan | open | tony | 2024-06-01 |
 | Report Q3 | open | mint | 2024-09-01 |
 
-Each search string compiles to a `Q`, and {class}`~django.db.models.QuerySet`
+Each search string compiles to a `Q`, and {class}`~django.db.models.query.QuerySet`
 `.filter(q)` runs it as SQL:
 
 | You type | It returns | The SQL Django runs |
@@ -39,9 +42,12 @@ Each search string compiles to a `Q`, and {class}`~django.db.models.QuerySet`
 | {dsq}`created:>2024-01-01` | Draft memo, Launch plan, Report Q3 | `WHERE created > '2024-01-01'` |
 | {dsq}`status:open author:tony` | Launch plan | `WHERE status LIKE 'open' AND author LIKE '%tony%'` |
 
-Every row is checked against a live `Article` table in
-`tests/test_query_showcase.py`, so the SQL and matches stay honest. (The SQL is
-cleaned for reading; `str(qs.query)` renders Django's fuller debug form.)
+Rows are listed in `created` order. Every row is checked against a live
+`Article` table in `tests/test_query_showcase.py`, so the SQL and matches stay
+honest. (The SQL is cleaned for reading and rendered on SQLite; `str(qs.query)`
+shows Django's fuller debug form, and your own database renders the equivalent
+lookups -- PostgreSQL, for instance, wraps case-insensitive matches in
+`UPPER(...)`.)
 
 Here is the `Q` behind the first row -- the whole magic in one call:
 
@@ -59,7 +65,9 @@ Here is the `Q` behind the first row -- the whole magic in one call:
 <Q: (AND: ('status__iexact', 'open'))>
 ```
 
-`Article.objects.filter(q)` then returns the matching rows.
+`Article.objects.filter(q)` then returns the matching rows. The other rows
+declare `author`, `title`, and `created` in the registry the same way -- the
+{doc}`tutorial` builds a registry like that end to end.
 
 ## Syntax
 
@@ -69,7 +77,7 @@ which `field:` names are allowed and how each compiles.
 
 | Syntax | Example | Compiles to |
 | --- | --- | --- |
-| Bare term | {dsq}`hello` | `icontains`, OR'd across `default_fields` |
+| Bare term | {dsq}`hello` | [`icontains`](https://docs.djangoproject.com/en/stable/ref/models/querysets/#std-fieldlookup-icontains), OR'd across `default_fields` |
 | Quoted phrase | {dsq}`"exact phrase"` | `icontains`, verbatim (no wildcard expansion) |
 | String field | {dsq}`author:tony` | `author__icontains='tony'` |
 | Enum field | {dsq}`status:open` | `status__iexact='open'` |

@@ -5,7 +5,7 @@
 This tutorial builds one search-enabled queryset from a raw string. You
 describe which fields a query is allowed to touch, compile a query string
 into a Django {class}`~django.db.models.Q`, and run it against a real
-{class}`~django.db.models.QuerySet`. That is the whole path -- most projects
+{class}`~django.db.models.query.QuerySet`. That is the whole path -- most projects
 never need more than this.
 
 ## Describe your searchable fields

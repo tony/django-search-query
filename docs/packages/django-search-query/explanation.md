@@ -46,7 +46,8 @@ opposite guarantee: it has to colorize every keystroke, including a query
 that is only half-typed -- an unterminated quote, a dangling `[`.
 
 For that, the package ships a second, presentation-only lexer,
-`highlight_query_spans`, that never raises. It runs one regex over the
+{func}`~django_search_query.highlight.highlight_query_spans`, that never
+raises. It runs one regex over the
 entire string, with a catch-all group absorbing any character it cannot
 classify, so the span list it returns always covers the source end to end.
 The two lexers share no code: keeping them independent means a change meant

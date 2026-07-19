@@ -83,11 +83,18 @@ conf = merge_sphinx_config(
 )
 globals().update(conf)
 
+# Class-var annotations render as ``t.ClassVar[...]`` (the ``import typing as
+# t`` alias), which nitpicky autodoc cannot resolve to a real target. It is a
+# typing construct, not a documentable class, so silence it rather than chase
+# an anchor that does not exist.
+nitpick_ignore = [("py:class", "t.ClassVar")]
+
 # Names available to every `>>>` block in the docs (sphinx.ext.doctest).
 # Django is already configured above via django.setup().
 doctest_global_setup = """
 from django.db.models import Q
 from django_search_query import build_q, parse, search_query_to_q
+from django_search_query.highlight import apply_registry_errors, highlight_query_spans
 from django_search_query.registry import FieldRegistry, FieldSpec
 """
 
