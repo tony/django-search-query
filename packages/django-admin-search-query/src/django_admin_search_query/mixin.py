@@ -11,13 +11,12 @@ from __future__ import annotations
 import logging
 import typing as t
 
-from django.contrib import admin
-
 from django_search_query import QueryParseError, search_query_to_q
 
 if t.TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
+    from django.contrib.admin import ModelAdmin
     from django.db.models import Model, QuerySet
     from django.http import HttpRequest
 
@@ -25,7 +24,7 @@ if t.TYPE_CHECKING:
 
     # At type-check time the mixin is a ModelAdmin so ``super()`` resolves and
     # ``self`` carries the admin API; at runtime it is a plain mixin (object).
-    _Base = admin.ModelAdmin[Model]
+    _Base = ModelAdmin[Model]
 else:
     _Base = object
 
