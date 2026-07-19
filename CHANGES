@@ -8,13 +8,25 @@ This changelog covers the whole workspace in one place: the core
 integration. Deliverables specific to the admin package name it in their
 heading.
 
-## django-search-query 0.1.0 (unreleased)
+## django-search-query 0.1.0a1 (unreleased)
 
 <!-- KEEP THIS PLACEHOLDER - DO NOT REMOVE OR MODIFY THIS LINE -->
 
 _Upcoming changes will be written here._
 
 <!-- END PLACEHOLDER - ADD NEW CHANGELOG ENTRIES BELOW THIS LINE -->
+
+## django-search-query 0.1.0a0 (2026-07-19)
+
+django-search-query 0.1.0a0 is the first alpha of the workspace, shipping the
+core query language together with its optional Django admin integration. The
+core compiles a Lucene-inspired search string into a Django `Q` object, backed
+by a field registry that keeps the searchable surface decoupled from your
+models and a highlighter for syntax-colored search boxes. The companion
+`django-admin-search-query` brings the language to admin changelists, adding a
+client-side colored, autocompleting search input that degrades to a plain
+field without JavaScript. As an alpha, the APIs may still change before the
+0.1.0 release.
 
 ### What's new
 

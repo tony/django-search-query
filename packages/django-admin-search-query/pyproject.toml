@@ -31,7 +31,7 @@ dependencies = [
   "django>=5.2",
   # Loose floor pin: the admin integration tracks the core query language
   # but versions and releases independently of it.
-  "django-search-query>=0.1.0",
+  "django-search-query>=0.1.0a0",
 ]
 
 [project.urls]
