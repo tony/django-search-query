@@ -22,11 +22,11 @@ recurses at the lowest binding power.
 from __future__ import annotations
 
 import logging
-import typing as t
 
 from django_search_query.ast import (
     And,
     Cmp,
+    CmpOp,
     Exists,
     Field,
     Node,
@@ -50,8 +50,7 @@ _PRIMARY_STARTS: frozenset[TokenKind] = frozenset(
     {"term", "ident", "lparen", "not", "minus", "plus"},
 )
 
-_CmpOp = t.Literal["gt", "gte", "lt", "lte"]
-_CMP_OPS: dict[TokenKind, _CmpOp] = {
+_CMP_OPS: dict[TokenKind, CmpOp] = {
     "gt": "gt",
     "lt": "lt",
     "gte": "gte",

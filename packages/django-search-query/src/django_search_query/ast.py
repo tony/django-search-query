@@ -13,6 +13,9 @@ import typing as t
 
 from django_search_query.registry import FieldKind
 
+CmpOp = t.Literal["gt", "gte", "lt", "lte"]
+"""Comparison operator carried by :class:`Cmp` and the parser's op table."""
+
 
 @dataclasses.dataclass(slots=True, frozen=True)
 class Term:
@@ -66,7 +69,7 @@ class Cmp:
     """
 
     field: str
-    op: t.Literal["gt", "gte", "lt", "lte"]
+    op: CmpOp
     value: str
 
 
@@ -151,6 +154,7 @@ type Node = Term | Field | Cmp | Range | Exists | Not | And | Or
 __all__ = [
     "And",
     "Cmp",
+    "CmpOp",
     "Exists",
     "Field",
     "Node",
