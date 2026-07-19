@@ -1,9 +1,10 @@
-"""Root URL configuration for the test suite.
-
-Empty for now; the admin integration package will register admin URLs here
-once it is implemented.
-"""
+"""Root URL configuration for the test suite."""
 
 from __future__ import annotations
 
-urlpatterns: list[object] = []
+from django.contrib import admin
+from django.urls import path
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+]
