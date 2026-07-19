@@ -15,6 +15,24 @@ _Upcoming changes will be written here._
 
 <!-- END PLACEHOLDER - ADD NEW CHANGELOG ENTRIES BELOW THIS LINE -->
 
+### What's new
+
+#### Structured search query language (#1)
+
+Turn a user's search string into a Django `Q` object with one
+`search_query_to_q()` call. The Lucene-inspired syntax covers field-scoped
+terms (`status:open`), quoted phrases, boolean `AND`/`OR`/`NOT` with grouping,
+comparison and range operators, wildcards, and `+`/`-` negation. Half-typed or
+unparseable input degrades to a match instead of raising, so a query runs while
+the user is still typing.
+
+#### Searchable-field registry (#1)
+
+A `FieldRegistry` declares which fields are searchable and maps user-facing
+names and aliases to ORM lookups, keeping the search surface decoupled from
+your models. Unknown fields and out-of-enum values are rejected as the query
+compiles, rather than silently mis-querying.
+
 ## django-admin-search-query 0.1.0 (unreleased)
 
 <!-- KEEP THIS PLACEHOLDER - DO NOT REMOVE OR MODIFY THIS LINE -->
@@ -22,3 +40,13 @@ _Upcoming changes will be written here._
 _Upcoming changes will be written here._
 
 <!-- END PLACEHOLDER - ADD NEW CHANGELOG ENTRIES BELOW THIS LINE -->
+
+### What's new
+
+#### Structured search in the Django admin changelist (#1)
+
+`SearchQueryAdminMixin` teaches the admin search box the query language: drop it
+before `ModelAdmin` and the changelist accepts field-scoped, boolean, and
+phrase queries. Anything it can't parse -- including a plain word -- falls back
+to Django's built-in `search_fields`, so the box never behaves worse than stock
+admin.
