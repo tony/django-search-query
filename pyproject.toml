@@ -51,6 +51,9 @@ dev = [
   "pytest-watcher",
   "pytest-mock",
   "pytest-rerunfailures",
+  "pytest-playwright",
+  # Dev server auto-reload for the colored-input harness (`just dev`)
+  "django-browser-reload",
   # Coverage
   "codecov",
   "coverage",
@@ -117,6 +120,9 @@ python-version = "3.12"
 [tool.pytest.ini_options]
 addopts = "--tb=short --no-header --showlocals --doctest-modules"
 doctest_optionflags = "ELLIPSIS NORMALIZE_WHITESPACE"
+markers = [
+  "e2e: browser end-to-end tests (excluded unless run with -m e2e)",
+]
 testpaths = [
   "packages/django-search-query/src",
   "packages/django-admin-search-query/src",
