@@ -2,43 +2,55 @@
 
 # django-admin-search-query
 
-An optional Django admin integration built on top of
-{doc}`django-search-query <../django-search-query/index>`.
+An optional Django admin integration for
+{doc}`django-search-query <../django-search-query/index>` -- reach for it
+when you want a changelist search box that understands the structured query
+language; the core package works without it.
 
-It adds structured search support to Django admin changelist pages while
-keeping the underlying query language usable independently. The relationship
-between the two packages stays loose so the core package never couples to
-Django admin behavior or presentation concerns.
+::::{grid} 1 1 2 2
+:gutter: 2 2 3 3
 
-## Colored search input
+:::{grid-item-card} {octicon}`rocket` Tutorial
+:link: ../../tutorial
+:link-type: doc
+Build a search registry and run a query against a Django queryset.
+:::
 
-`SearchQueryAdminMixin` also ships an optional, self-contained search input
-implemented in vanilla JavaScript. The highlighting is computed **on the
-server** -- there is no JavaScript tokenizer -- so the colors can never drift
-from the Python engine. The input offers:
+:::{grid-item-card} {octicon}`checklist` How-to
+:link: how-to
+:link-type: doc
+Add `SearchQueryAdminMixin` to a `ModelAdmin`, using the worked `ArticleAdmin`
+example.
+:::
 
-- syntax highlighting of the query as it is typed, including a registry-aware
-  `error` role for unknown fields and out-of-enum values,
-- keyboard-navigable autocomplete for field names and enum values, and
-- graceful degradation: with JavaScript unavailable or offline, the box stays a
-  plain text field that still submits `?q=`.
+:::{grid-item-card} {octicon}`book` Reference
+:link: reference
+:link-type: doc
+The `SearchQueryAdminMixin` API, its hooks, and the JSON endpoints behind the
+colored input.
+:::
 
-See {doc}`colored-input` for the endpoint contract and the design.
+:::{grid-item-card} {octicon}`light-bulb` Explanation
+:link: explanation
+:link-type: doc
+Loose coupling to the core package, and how the search box degrades without
+JavaScript.
+:::
 
-## Install
+:::{grid-item-card} {octicon}`paintbrush` Colored input
+:link: colored-input
+:link-type: doc
+The optional vanilla-JavaScript search input: syntax highlighting and
+autocomplete.
+:::
 
-Installing the admin integration pulls in the core query language:
-
-```console
-$ pip install django-admin-search-query
-```
-
-```console
-$ uv add django-admin-search-query
-```
+::::
 
 ```{toctree}
 :hidden:
 
+how-to
+reference
+explanation
 colored-input
 ```
