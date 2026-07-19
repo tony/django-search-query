@@ -1,0 +1,103 @@
+/* Package install widget — Furo-var driven. Dark mode follows the theme.
+ *
+ * Two tab rows (package x method) sit above one panel per (package,
+ * method) pair. This file owns the base look (borders, tab styling, the
+ * server-default aria-selected active look) plus the no-JS fallback
+ * ``.panel[hidden]{display:none}``. The attribute-driven visibility that
+ * survives gp-sphinx SPA navigation — lighting the active tabs and
+ * showing the one matching panel from ``<html data-package-install-*>``
+ * — lives in the @layer package-install-prehydrate block injected by
+ * docs/_ext/widgets/_prehydrate.py, so those rules paint before this
+ * stylesheet's <link> even resolves.
+ *
+ * Code blocks (``.highlight-console``, ``.highlight-python``) inherit
+ * Pygments + Furo styling directly — no per-widget code styling here.
+ */
+
+.dsq-package-install {
+  border: 1px solid var(--color-background-border, var(--color-foreground-border, #ccc));
+  border-radius: 0.25rem;
+  background: var(--color-background-primary);
+  overflow: hidden;
+  margin: 1rem 0;
+  font-size: 0.95em;
+}
+
+.dsq-package-install__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  background: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-background-border, var(--color-foreground-border, #ccc));
+}
+
+/* Second row (methods) gets a lighter wash so the two axes read as
+ * distinct rows rather than one wrapped strip of tabs. */
+.dsq-package-install__tabs--methods {
+  background: color-mix(in srgb, var(--color-background-secondary) 60%, var(--color-background-primary));
+}
+
+.dsq-package-install__tab {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--color-foreground-muted);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.45rem 0.9rem;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.dsq-package-install__tab:hover {
+  color: var(--color-foreground-primary);
+  background: var(--color-background-hover, rgba(0, 0, 0, 0.04));
+}
+
+.dsq-package-install__tab:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: -2px;
+}
+
+.dsq-package-install__tab[aria-selected="true"] {
+  color: var(--color-brand-primary);
+  border-bottom-color: var(--color-brand-primary);
+  background: var(--color-background-primary);
+}
+
+.dsq-package-install__body {
+  padding: 0.9rem 1rem;
+}
+
+.dsq-package-install__panel[hidden] {
+  display: none !important;
+}
+
+.dsq-package-install__panel:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 4px;
+  border-radius: 0.25rem;
+}
+
+.dsq-package-install__preamble {
+  margin: 0 0 0.4rem 0;
+  color: var(--color-foreground-secondary);
+  font-size: 0.93em;
+}
+
+.dsq-package-install__preamble a {
+  color: var(--color-brand-content, var(--color-brand-primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.dsq-package-install__preamble code {
+  font-size: 0.95em;
+}
+
+/* Add a small gap when a preamble follows a code block (the "Then …"
+ * line after the install snippet). */
+.dsq-package-install__panel .highlight-console + .dsq-package-install__preamble {
+  margin-top: 0.8rem;
+}

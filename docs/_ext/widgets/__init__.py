@@ -1,13 +1,13 @@
 """Reusable widget framework for Sphinx docs.
 
 Each widget is a ``BaseWidget`` subclass in a sibling module (e.g.
-``library_install.py``) plus a ``<docs>/_widgets/<name>/widget.{html,js,css}``
+``package_install.py``) plus a ``<docs>/_widgets/<name>/widget.{html,js,css}``
 asset directory. Widgets autodiscover at ``setup()`` time — adding a new one
 requires no registry edits. Usage from Markdown/RST:
 
 .. code-block:: markdown
 
-   ```{library-install}
+   ```{package-install}
    ```
 """
 
@@ -25,7 +25,7 @@ from ._base import (
 )
 from ._directive import make_widget_directive
 from ._discovery import discover
-from ._prehydrate import inject_library_install_prehydrate
+from ._prehydrate import inject_package_install_prehydrate
 
 if t.TYPE_CHECKING:
     from sphinx.application import Sphinx
@@ -56,7 +56,7 @@ def setup(app: Sphinx) -> dict[str, t.Any]:
         "builder-inited",
         functools.partial(install_widget_assets, widgets=widgets),
     )
-    app.connect("html-page-context", inject_library_install_prehydrate)
+    app.connect("html-page-context", inject_package_install_prehydrate)
 
     return {
         "version": __version__,

@@ -11,7 +11,7 @@ from ._base import BaseWidget
 def discover() -> dict[str, type[BaseWidget]]:
     """Import every non-underscore submodule; collect ``BaseWidget`` subclasses.
 
-    Adding a new widget means: drop ``mywidget.py`` next to ``library_install.py``
+    Adding a new widget means: drop ``mywidget.py`` next to ``package_install.py``
     with a ``MyWidget(BaseWidget)`` that sets ``name = "mywidget"`` -- the discovery
     sweep at ``setup()`` time registers it automatically.
     """
