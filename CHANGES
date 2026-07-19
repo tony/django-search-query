@@ -58,3 +58,12 @@ client-side, with no per-keystroke request. A keyboard-navigable combobox
 suggests field names, enum values, and comparison/range operators. With
 JavaScript off it degrades to the plain search box, so nothing regresses below
 stock admin.
+
+### Development
+
+#### Automated documentation publishing (#3)
+
+Sphinx docs now build on every pull request, so a broken docs build is
+caught in review rather than after merge. Merges to `master` publish the
+rendered site automatically, keeping the documentation site current
+without a manual release step.
