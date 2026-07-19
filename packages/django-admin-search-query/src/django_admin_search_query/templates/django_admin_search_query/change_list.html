@@ -1,0 +1,20 @@
+{% extends "admin/change_list.html" %}
+
+{% comment %}
+Non-forking colored-input hook. ``{{ block.super }}`` renders Django's own
+search form, so facets, hidden filter params, and help text stay in sync with
+the installed admin version instead of being copied here. A hidden config
+element then carries the endpoint URLs (reversed in
+SearchQueryAdminMixin.changelist_view, emitted only when the admin configures a
+registry); search-input.js reads the token URL, finds the stock ``#searchbar``
+input, and enhances it into the colored editor -- coloring runs client-side via
+search-lexer.js, so the highlight URL is only a no-JS fallback reference. With
+JavaScript off, the plain input still submits ``?q=`` untouched, so the box
+never regresses below stock admin.
+{% endcomment %}
+
+{% block search %}{{ block.super }}{% if search_tokens_url %}
+<div class="dsq-search-config" hidden data-dsq-search
+     data-search-tokens-url="{{ search_tokens_url }}"
+     data-highlight-url="{{ search_highlight_url }}"></div>
+{% endif %}{% endblock %}

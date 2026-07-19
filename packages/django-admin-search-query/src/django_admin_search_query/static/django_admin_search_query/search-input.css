@@ -1,0 +1,187 @@
+/*
+ * django-admin-search-query colored input.
+ *
+ * A native <input class=dsq-editor> (transparent text, visible caret) sits on
+ * top of an aria-hidden <div class=dsq-mirror> that paints role-classed spans.
+ * All box geometry -- font, line-height, padding, border-width, box-sizing --
+ * is copied from the live #searchbar onto both elements by search-input.js, so
+ * this stylesheet carries NO hard-coded font-size / padding / line-height:
+ * matching those to Django's themed input is what makes the editor's auto
+ * height equal the one-line mirror's, aligning text to the pixel.
+ */
+
+.dsq-wrap {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 100%;
+
+  --dsq-field: #0a58ca;
+  --dsq-punct: #6c757d;
+  --dsq-keyword: #6f42c1;
+  --dsq-negation: #d63384;
+  --dsq-operator: #0b7285;
+  --dsq-wildcard: #d9480f;
+  --dsq-phrase: #198754;
+  --dsq-error: #d6336c;
+  --dsq-border: #ccc;
+  --dsq-dropdown-bg: #fff;
+  --dsq-dropdown-fg: #303030;
+  --dsq-dropdown-active: #e7f1ff;
+}
+
+.dsq-mirror,
+.dsq-editor {
+  box-sizing: border-box;
+  margin: 0;
+  max-width: 100%;
+  /* white-space:pre keeps runs of spaces measurable and prevents wrapping, so
+     the single-line mirror tracks the input's horizontal scroll exactly. */
+  white-space: pre;
+  overflow: hidden;
+}
+
+.dsq-mirror {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* Sits BEHIND the transparent editor; background + colored spans show
+     through. Border kept transparent (width matched by JS) so the editor's
+     visible border is the only one drawn. */
+  border-style: solid;
+  border-color: transparent;
+  pointer-events: none;
+  user-select: none;
+}
+
+.dsq-editor {
+  position: relative;
+  z-index: 2;
+  /* Transparent glyphs (Safari honors -webkit-text-fill-color); the mirror
+     paints the colors, the caret stays visible. */
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background: transparent;
+  border-style: solid;
+}
+
+.dsq-editor:focus {
+  outline: 2px solid var(--dsq-field);
+  outline-offset: -1px;
+}
+
+/* -- role colors (color-only: no font-weight, so glyph advance-widths never
+      drift the mirror from the input) ---------------------------------------- */
+
+.dsq-token--field {
+  color: var(--dsq-field);
+}
+.dsq-token--punct {
+  color: var(--dsq-punct);
+}
+.dsq-token--keyword {
+  color: var(--dsq-keyword);
+}
+.dsq-token--negation {
+  color: var(--dsq-negation);
+}
+.dsq-token--operator {
+  color: var(--dsq-operator);
+}
+.dsq-token--wildcard {
+  color: var(--dsq-wildcard);
+}
+.dsq-token--phrase {
+  color: var(--dsq-phrase);
+}
+.dsq-token--error {
+  color: var(--dsq-error);
+  text-decoration: underline wavy var(--dsq-error);
+}
+
+/* -- suggestions listbox ------------------------------------------------- */
+
+.dsq-listbox {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 2px);
+  left: 0;
+  min-width: 12rem;
+  max-width: 100%;
+  max-height: 15rem;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  background: var(--dsq-dropdown-bg);
+  border: 1px solid var(--dsq-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.dsq-listbox[hidden] {
+  display: none;
+}
+
+.dsq-option {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8125rem;
+  font-family: monospace;
+  color: var(--dsq-dropdown-fg);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dsq-option[aria-selected="true"],
+.dsq-option:hover {
+  background: var(--dsq-dropdown-active);
+}
+
+/* -- dark mode: honor both the OS preference and the admin theme toggle - */
+
+@media (prefers-color-scheme: dark) {
+  .dsq-wrap {
+    --dsq-field: #6ea8fe;
+    --dsq-punct: #adb5bd;
+    --dsq-keyword: #c9a0ff;
+    --dsq-negation: #ff8cc6;
+    --dsq-operator: #66d9e8;
+    --dsq-wildcard: #ffa94d;
+    --dsq-phrase: #69db7c;
+    --dsq-error: #ff6b8a;
+    --dsq-border: #52585c;
+    --dsq-dropdown-bg: #2b2b2b;
+    --dsq-dropdown-fg: #e6e6e6;
+    --dsq-dropdown-active: #33415c;
+  }
+}
+
+html[data-theme="dark"] .dsq-wrap {
+  --dsq-field: #6ea8fe;
+  --dsq-punct: #adb5bd;
+  --dsq-keyword: #c9a0ff;
+  --dsq-negation: #ff8cc6;
+  --dsq-operator: #66d9e8;
+  --dsq-wildcard: #ffa94d;
+  --dsq-phrase: #69db7c;
+  --dsq-error: #ff6b8a;
+  --dsq-border: #52585c;
+  --dsq-dropdown-bg: #2b2b2b;
+  --dsq-dropdown-fg: #e6e6e6;
+  --dsq-dropdown-active: #33415c;
+}
+
+html[data-theme="light"] .dsq-wrap {
+  --dsq-field: #0a58ca;
+  --dsq-punct: #6c757d;
+  --dsq-keyword: #6f42c1;
+  --dsq-negation: #d63384;
+  --dsq-operator: #0b7285;
+  --dsq-wildcard: #d9480f;
+  --dsq-phrase: #198754;
+  --dsq-error: #d6336c;
+  --dsq-border: #ccc;
+  --dsq-dropdown-bg: #fff;
+  --dsq-dropdown-fg: #303030;
+  --dsq-dropdown-active: #e7f1ff;
+}
