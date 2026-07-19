@@ -1,0 +1,22 @@
+# Migration notes
+
+Deprecation and migration notes for the workspace packages --
+`django-search-query` and `django-admin-search-query` -- live here; see the
+changelog for the full list of changes. Pin the packages and check these notes
+before upgrading.
+
+## django-search-query 0.1.0 (unreleased)
+
+<!-- KEEP THIS PLACEHOLDER - DO NOT REMOVE OR MODIFY THIS LINE -->
+
+_Upcoming migration notes will be written here._
+
+<!-- END PLACEHOLDER - ADD NEW MIGRATION NOTES BELOW THIS LINE -->
+
+## django-admin-search-query 0.1.0 (unreleased)
+
+<!-- KEEP THIS PLACEHOLDER - DO NOT REMOVE OR MODIFY THIS LINE -->
+
+_Upcoming migration notes will be written here._
+
+<!-- END PLACEHOLDER - ADD NEW MIGRATION NOTES BELOW THIS LINE -->

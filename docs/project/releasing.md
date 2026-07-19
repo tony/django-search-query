@@ -3,7 +3,8 @@
 # Releasing
 
 Each package is versioned and released **independently**. A release touches
-one package's version and changelog without requiring changes to the other.
+one package's version and its section of the shared root changelog without
+requiring changes to the other.
 
 The version literal lives in two places per package:
 

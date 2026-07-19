@@ -38,7 +38,7 @@ dependencies = [
 "Bug Tracker" = "https://github.com/tony/django-search-query/issues"
 Documentation = "https://django-search-query.git-pull.com"
 Repository = "https://github.com/tony/django-search-query"
-Changes = "https://github.com/tony/django-search-query/blob/master/packages/django-admin-search-query/CHANGES"
+Changes = "https://github.com/tony/django-search-query/blob/master/CHANGES"
 
 [build-system]
 requires = ["hatchling"]
@@ -50,6 +50,5 @@ packages = ["src/django_admin_search_query"]
 [tool.hatch.build.targets.sdist]
 include = [
   "src/",
-  "CHANGES",
   "README.md",
 ]

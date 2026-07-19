@@ -90,7 +90,7 @@ watch-ty:
 # Format markdown files with prettier
 [group: 'format']
 format-markdown:
-    prettier --parser=markdown -w '*.md' 'docs/**/*.md' 'packages/*/README.md' 'packages/*/CHANGES'
+    prettier --parser=markdown -w '*.md' 'docs/**/*.md' 'packages/*/README.md' CHANGES MIGRATION
 
 [private]
 _entr-warn:

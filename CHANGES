@@ -1,0 +1,24 @@
+# Changelog
+
+To install unreleased versions of a workspace package, see [developmental
+releases](https://django-search-query.git-pull.com/quickstart.html#developmental-releases).
+
+The workspace ships two packages -- `django-search-query` and
+`django-admin-search-query` -- that version and release independently. Both
+share this changelog; each release section names its package and version.
+
+## django-search-query 0.1.0 (unreleased)
+
+<!-- KEEP THIS PLACEHOLDER - DO NOT REMOVE OR MODIFY THIS LINE -->
+
+_Upcoming changes will be written here._
+
+<!-- END PLACEHOLDER - ADD NEW CHANGELOG ENTRIES BELOW THIS LINE -->
+
+## django-admin-search-query 0.1.0 (unreleased)
+
+<!-- KEEP THIS PLACEHOLDER - DO NOT REMOVE OR MODIFY THIS LINE -->
+
+_Upcoming changes will be written here._
+
+<!-- END PLACEHOLDER - ADD NEW CHANGELOG ENTRIES BELOW THIS LINE -->
