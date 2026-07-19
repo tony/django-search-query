@@ -163,6 +163,7 @@
       seq: 0, // monotonically-increasing request id; stale replies are ignored
       controller: null, // AbortController for the in-flight highlight request
       schema: { fields: [], default_fields: [] },
+      cache: Object.create(null), // highlight spans memoized by exact query text
       items: [], // current dropdown suggestions
       active: -1, // highlighted dropdown index
     };
@@ -177,6 +178,14 @@
 
     function requestHighlight() {
       var value = editor.value;
+      // Backspacing to a query we already colored re-renders from cache with no
+      // network round-trip -- the main blunt against the per-edit fetch.
+      var cached = state.cache[value];
+      if (cached) {
+        renderSpans(overlay, cached);
+        syncScroll();
+        return;
+      }
       var mySeq = ++state.seq;
       if (state.controller) {
         state.controller.abort(); // drop the previous in-flight request
@@ -196,7 +205,9 @@
           if (mySeq !== state.seq || editor.value !== value) {
             return;
           }
-          renderSpans(overlay, data.spans || []);
+          var spans = data.spans || [];
+          state.cache[value] = spans;
+          renderSpans(overlay, spans);
           syncScroll();
         })
         .catch(function () {

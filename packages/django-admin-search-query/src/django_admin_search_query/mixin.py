@@ -36,6 +36,10 @@ else:
 
 logger = logging.getLogger(__name__)
 
+# Upper bound on the ``?q=`` a highlight request will lex, so the per-keystroke
+# endpoint can't be turned into an expensive-lexer amplifier by a huge query.
+_MAX_HIGHLIGHT_QUERY = 1000
+
 
 def _strip_search_field_prefixes(search_fields: Iterable[str]) -> tuple[str, ...]:
     """Strip Django ``search_fields`` lookup sigils (``^``, ``=``, ``@``, ``$``)."""
@@ -221,7 +225,7 @@ class SearchQueryAdminMixin(_Base):
         """
         if not self.has_view_permission(request):
             raise PermissionDenied
-        query = request.GET.get("q", "")
+        query = request.GET.get("q", "")[:_MAX_HIGHLIGHT_QUERY]
         logger.debug(
             "highlight requested",
             extra={"django_search_query_len": len(query)},
