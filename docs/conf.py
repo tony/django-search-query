@@ -51,6 +51,7 @@ conf = merge_sphinx_config(
     source_branch="master",
     extra_extensions=[
         "sphinx.ext.doctest",
+        "sphinx_autodoc_api_style",
         "docs._ext.widgets",
     ],
     intersphinx_mapping={

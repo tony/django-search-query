@@ -43,6 +43,7 @@ dev = [
   "django-admin-search-query",
   # Docs
   "gp-sphinx==0.0.1a34",
+  "sphinx-autodoc-api-style==0.0.1a34",
   "gp-libs>=0.0.19",
   "sphinx-autobuild",
   # Testing
