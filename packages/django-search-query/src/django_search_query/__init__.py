@@ -77,9 +77,14 @@ def search_query_to_q(
     ... )
     <Q: (AND: ('status__iexact', 'open'))>
     """
+    # FieldSpec.path is the authoritative ORM path; the caller's field_map
+    # overrides it per-call. Merge so an unmapped field still resolves to its
+    # registered path rather than its bare name.
+    resolved_map = {spec.name: spec.path for spec in registry.specs}
+    resolved_map.update(field_map)
     return build_q(
         parse(query, registry),
-        field_map,
+        resolved_map,
         default_fields=default_fields,
     )
 
