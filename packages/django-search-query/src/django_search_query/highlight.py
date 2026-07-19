@@ -187,19 +187,22 @@ def apply_registry_errors(
 def _value_index_after_field(spans: list[Span], field_index: int) -> int | None:
     """Return the index of the value span for the field at ``field_index``.
 
-    A field predicate lexes as ``field`` ``:`` ``value`` in three consecutive
-    spans; this returns the value's index, or ``None`` when the field is not
-    immediately followed by ``: value`` (e.g. a comparison or a range, which
-    carry no enum to validate).
+    A field predicate lexes as ``field`` ``:`` ``value`` (optionally with one
+    whitespace span after the colon, since ``status: open`` is the same
+    predicate as ``status:open``); this returns the value's index, or ``None``
+    when the field is not followed by a value -- e.g. a comparison or a range,
+    which carry no enum to validate.
     """
     colon_index = field_index + 1
-    value_index = field_index + 2
-    if value_index >= len(spans):
+    if colon_index >= len(spans):
         return None
     colon = spans[colon_index]
     if colon.role != "punct" or colon.text != ":":
         return None
-    if spans[value_index].role in {"value", "phrase"}:
+    value_index = colon_index + 1
+    if value_index < len(spans) and spans[value_index].role == "whitespace":
+        value_index += 1
+    if value_index < len(spans) and spans[value_index].role in {"value", "phrase"}:
         return value_index
     return None
 

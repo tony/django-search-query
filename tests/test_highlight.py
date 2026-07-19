@@ -150,3 +150,15 @@ def test_apply_registry_errors_does_not_mutate_input() -> None:
     snapshot = list(original)
     apply_registry_errors(original, REGISTRY)
     assert original == snapshot
+
+
+def test_apply_registry_errors_flags_spaced_out_of_enum_value() -> None:
+    """A space after the colon still lets an out-of-enum value be flagged."""
+    spans = apply_registry_errors(highlight_query_spans("status: bogus"), REGISTRY)
+    assert [s.text for s in spans if s.role == "error"] == ["bogus"]
+
+
+def test_apply_registry_errors_flags_spaced_unknown_field_and_value() -> None:
+    """An unknown field followed by a spaced value flags both."""
+    spans = apply_registry_errors(highlight_query_spans("nope: x"), REGISTRY)
+    assert [s.text for s in spans if s.role == "error"] == ["nope", "x"]

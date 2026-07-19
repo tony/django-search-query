@@ -62,7 +62,8 @@ def test_colored_input_highlights_and_autocompletes(
     assert caught.value.ok
 
     page.wait_for_selector(".dsq-token--field")
-    assert page.locator(".dsq-token--field").count() >= 1
+    # Exactly two field-scoped tokens: ``status:`` and ``author:``.
+    assert page.locator(".dsq-token--field").count() == 2
 
     # Autocomplete: after ``status:`` the dropdown lists the enum values.
     editor.fill("")
