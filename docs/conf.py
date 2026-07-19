@@ -49,6 +49,10 @@ conf = merge_sphinx_config(
     source_repository=f"{about['__github__']}/",
     docs_url=about["__docs__"],
     source_branch="master",
+    light_logo="img/icons/logo.svg",
+    dark_logo="img/icons/logo-dark.svg",
+    html_favicon="_static/favicon.ico",
+    html_extra_path=["manifest.json"],
     extra_extensions=[
         "sphinx.ext.doctest",
         "sphinx_autodoc_api_style",
