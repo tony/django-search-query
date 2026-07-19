@@ -57,7 +57,8 @@ SCHEMA: dict[str, t.Any] = {
 
 # Adversarial on purpose: uppercase keywords vs. non-keywords, unterminated
 # quotes, emoji/astral chars, out-of-enum and unknown fields, negation sigils,
-# comparisons/ranges, wildcards, tabs, and the Unicode edge cases where Python
+# comparisons/ranges, wildcards, escaped quotes/spaces/backslashes, standalone
+# operators, field-scoped groups, tabs, and the Unicode edge cases where Python
 # ``re`` and JS ``RegExp`` disagree unless the port is careful (accented and
 # CJC letters after a keyword; U+001C/U+0085 whitespace; U+FEFF non-whitespace).
 CORPUS: tuple[str, ...] = (
@@ -96,6 +97,23 @@ CORPUS: tuple[str, ...] = (
     "by:tony",
     "status: bogus",
     "\\",
+    # -- broadened: comparison operators, ranges, escapes, field-scoped groups.
+    "created:>2024",
+    "created:<2024-01-01",
+    "created:<=2024",
+    "a>b",
+    "x >= y",
+    ">=",
+    "created:[* TO 2024-12-31]",
+    "created:{2024 TO *}",
+    "[a TO b]",
+    "mismatch:[a TO b}",
+    "+status:open -created:>2020",
+    "status:(open OR draft)",
+    "NOT(x)",
+    r'"he said \"hi\""',
+    r"title:foo\ bar",
+    r"path\to\thing",
 )
 
 GOLDEN_PATH = pathlib.Path(__file__).parent / "lexer_parity_golden.json"
