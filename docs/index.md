@@ -26,6 +26,12 @@ Add the core package or the admin integration to a Django project.
 The core query language and the optional admin integration.
 :::
 
+:::{grid-item-card} {octicon}`book` Reference
+:link: packages/django-search-query/reference
+:link-type: doc
+The public API: parse, build_q, search_query_to_q, the field registry.
+:::
+
 :::{grid-item-card} {octicon}`tools` Project
 :link: project/index
 :link-type: doc

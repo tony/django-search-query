@@ -23,6 +23,7 @@ class QueryParseError(ValueError):
 
     Examples
     --------
+    >>> from django_search_query.errors import QueryParseError
     >>> err = QueryParseError("unexpected token", position=4)
     >>> err.position
     4
