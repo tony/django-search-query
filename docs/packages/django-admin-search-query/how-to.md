@@ -61,7 +61,7 @@ Three class attributes wire the language into this admin:
 
 - `search_query_registry` -- the same kind of
   {class}`~django_search_query.registry.FieldRegistry` you would build for
-  any other site; it decides which fields `status:open` and friends may
+  any other site; it decides which fields {dsq}`status:open` and friends may
   touch on this changelist.
 - `search_query_field_map` -- field name to ORM lookup path, exactly like
   the core package's `field_map` (see {doc}`../django-search-query/how-to`).

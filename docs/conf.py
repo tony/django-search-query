@@ -11,9 +11,14 @@ from __future__ import annotations
 import os
 import pathlib
 import sys
+import typing as t
 
 import django
 from gp_sphinx.config import make_workspace_linkcode_resolve, merge_sphinx_config
+
+if t.TYPE_CHECKING:
+    from docutils import nodes
+    from sphinx.application import Sphinx
 
 # Project layout
 cwd = pathlib.Path(__file__).parent
@@ -90,9 +95,39 @@ from django_search_query.registry import FieldRegistry, FieldSpec
 _ = django_search_query
 
 
-def setup(app: object) -> dict[str, bool]:
-    """Register the ``dsq`` query-language lexer for MyST code fences."""
+def _dsq_inline_role(
+    name: str,
+    rawtext: str,
+    text: str,
+    lineno: int,
+    inliner: object,
+    options: dict[str, t.Any] | None = None,
+    content: list[str] | None = None,
+) -> tuple[list[nodes.Node], list[nodes.system_message]]:
+    """Inline ``{dsq}`status:open` `` role: highlight query syntax inline.
+
+    Reuses the same ``DjangoSearchQueryLexer`` the ```` ```dsq ```` fences use,
+    emitting an inline ``<code class="highlight">`` whose token spans pick up
+    the theme's class-scoped Pygments colors in both light and dark mode.
+    """
+    from docutils import nodes, utils
+    from pygments import highlight
+    from pygments.formatters.html import HtmlFormatter
+
     from django_search_query.pygments_lexer import DjangoSearchQueryLexer
 
-    app.add_lexer("dsq", DjangoSearchQueryLexer)  # ty: ignore[unresolved-attribute]
+    inner = highlight(
+        utils.unescape(text), DjangoSearchQueryLexer(), HtmlFormatter(nowrap=True)
+    ).strip()
+    html = f'<code class="highlight dsq-inline">{inner}</code>'
+    return [nodes.raw("", html, format="html")], []
+
+
+def setup(app: Sphinx) -> dict[str, bool]:
+    """Register the ``dsq`` fence lexer, the ``{dsq}`` inline role, and its CSS."""
+    from django_search_query.pygments_lexer import DjangoSearchQueryLexer
+
+    app.add_lexer("dsq", DjangoSearchQueryLexer)
+    app.add_role("dsq", _dsq_inline_role)
+    app.add_css_file("css/dsq-inline.css")
     return {"parallel_read_safe": True, "parallel_write_safe": True}

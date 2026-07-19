@@ -37,21 +37,21 @@ several of these as doctests.
 
 | Syntax | Example | Compiles to |
 | --- | --- | --- |
-| Bare term | `hello` | `icontains`, OR'd across `default_fields` |
-| Quoted phrase | `"exact phrase"` | `icontains`, verbatim (no wildcard expansion) |
-| String field | `author:tony` | `author__icontains='tony'` |
-| Enum field | `status:open` | `status__iexact='open'` |
-| Trailing wildcard | `title:report*` | `title__istartswith='report'` |
-| Leading wildcard | `title:*report` | `title__iendswith='report'` |
-| Comparison | `created:>2024-01-01` | `created__gt='2024-01-01'` |
-| Inclusive range | `created:[2024-01-01 TO 2024-12-31]` | `created__gte='2024-01-01'` and `created__lte='2024-12-31'` |
-| Exclusive range | `created:{2024-01-01 TO 2024-12-31}` | `created__gt='2024-01-01'` and `created__lt='2024-12-31'` |
-| Existence | `status:*` | `status` is non-empty and non-null |
-| OR | `status:open OR status:draft` | `Q(...) \| Q(...)` |
-| Implicit AND | `status:open author:tony` | `Q(...) & Q(...)` |
-| Negation | `-status:closed` | `~Q(status__iexact='closed')` |
-| `?` (reserved) | `title:a?c` | literal `title__icontains='a?c'` -- `?` is not a wildcard the compiler implements |
-| Bare value on a `date`/`number` field | `created:2024` | literal `created__icontains='2024'` -- not a date or number comparison |
+| Bare term | {dsq}`hello` | `icontains`, OR'd across `default_fields` |
+| Quoted phrase | {dsq}`"exact phrase"` | `icontains`, verbatim (no wildcard expansion) |
+| String field | {dsq}`author:tony` | `author__icontains='tony'` |
+| Enum field | {dsq}`status:open` | `status__iexact='open'` |
+| Trailing wildcard | {dsq}`title:report*` | `title__istartswith='report'` |
+| Leading wildcard | {dsq}`title:*report` | `title__iendswith='report'` |
+| Comparison | {dsq}`created:>2024-01-01` | `created__gt='2024-01-01'` |
+| Inclusive range | {dsq}`created:[2024-01-01 TO 2024-12-31]` | `created__gte='2024-01-01'` and `created__lte='2024-12-31'` |
+| Exclusive range | {dsq}`created:{2024-01-01 TO 2024-12-31}` | `created__gt='2024-01-01'` and `created__lt='2024-12-31'` |
+| Existence | {dsq}`status:*` | `status` is non-empty and non-null |
+| OR | {dsq}`status:open OR status:draft` | `Q(...) \| Q(...)` |
+| Implicit AND | {dsq}`status:open author:tony` | `Q(...) & Q(...)` |
+| Negation | {dsq}`-status:closed` | `~Q(status__iexact='closed')` |
+| `?` (reserved) | {dsq}`title:a?c` | literal `title__icontains='a?c'` -- `?` is not a wildcard the compiler implements |
+| Bare value on a `date`/`number` field | {dsq}`created:2024` | literal `created__icontains='2024'` -- not a date or number comparison |
 
 The last two rows are deliberate, not bugs: `?` is a wildcard character to
 the highlighter only, and a field's `kind` controls formatting, not parsing

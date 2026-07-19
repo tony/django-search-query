@@ -60,7 +60,7 @@ this same lexer that colors the admin search box client-side.
 ## Lucene-inspired, not Lucene-compatible
 
 The syntax borrows familiar [Lucene] shapes -- field-scoped terms
-(`status:open`), quoted phrases, `AND`/`OR`/`NOT`, grouping, comparisons,
+({dsq}`status:open`), quoted phrases, `AND`/`OR`/`NOT`, grouping, comparisons,
 and ranges -- but the package does not claim full Lucene compatibility, and
 some gaps are permanent rather than pending. There is no fuzzy match
 (`~`), no boosting (`^`), and no proximity search. `?` is not a
