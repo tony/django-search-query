@@ -64,7 +64,6 @@ conf = merge_sphinx_config(
         github_url=about["__github__"],
         source_branch="master",
     ),
-    autodoc_mock_imports=["django"],
     set_type_checking_flag=True,
     rediraffe_redirects="redirects.txt",
     # AGENTS.md / CLAUDE.md are agent guidance, not site pages; keep Sphinx
@@ -72,6 +71,14 @@ conf = merge_sphinx_config(
     exclude_patterns=["_build", "AGENTS.md", "CLAUDE.md"],
 )
 globals().update(conf)
+
+# Names available to every `>>>` block in the docs (sphinx.ext.doctest).
+# Django is already configured above via django.setup().
+doctest_global_setup = """
+from django.db.models import Q
+from django_search_query import build_q, parse, search_query_to_q
+from django_search_query.registry import FieldRegistry, FieldSpec
+"""
 
 # Keep django_search_query imported so linkcode can resolve its source.
 _ = django_search_query

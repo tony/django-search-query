@@ -35,6 +35,11 @@ checkbuild:
 linkcheck:
     {{ sphinxbuild }} -b linkcheck {{ allsphinxopts }} {{ builddir }}/linkcheck
 
+# Run documentation doctests
+[group: 'validate']
+doctest:
+    {{ sphinxbuild }} -b doctest {{ allsphinxopts }} {{ builddir }}/doctest
+
 # Clean build directory
 [group: 'misc']
 [confirm]
