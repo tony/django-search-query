@@ -33,6 +33,14 @@ names and aliases to ORM lookups, keeping the search surface decoupled from
 your models. Unknown fields and out-of-enum values are rejected as the query
 compiles, rather than silently mis-querying.
 
+#### Query highlighting (#2)
+
+`highlight_query_spans()` lexes a query string into contiguous
+`(start, role, text)` spans -- fields, phrases, keywords, operators, negation,
+and wildcards -- ready to drive a syntax-highlighted search box. A
+registry-aware pass flags unknown fields and out-of-enum values with an `error`
+role, and the lexer never raises on half-typed input.
+
 ## django-admin-search-query 0.1.0 (unreleased)
 
 <!-- KEEP THIS PLACEHOLDER - DO NOT REMOVE OR MODIFY THIS LINE -->
@@ -50,3 +58,12 @@ before `ModelAdmin` and the changelist accepts field-scoped, boolean, and
 phrase queries. Anything it can't parse -- including a plain word -- falls back
 to Django's built-in `search_fields`, so the box never behaves worse than stock
 admin.
+
+#### Colored search input for the admin changelist (#2)
+
+The changelist search box now highlights the query as you type -- field-scoped
+terms, phrases, operators, and errors are colored live and entirely
+client-side, with no per-keystroke request. A keyboard-navigable combobox
+suggests field names, enum values, and comparison/range operators. With
+JavaScript off it degrades to the plain search box, so nothing regresses below
+stock admin.
