@@ -465,12 +465,20 @@
     wrap.appendChild(listbox);
 
     // Neutralize (don't destroy) the stock #searchbar: keep it in the DOM but
-    // inert and non-submitting, so its id still resolves and JS-off keeps the
-    // plain input. The editor becomes the sole `?q=` submitter.
+    // inert and non-submitting so JS-off still submits the plain input. The
+    // editor becomes the sole `?q=` submitter.
     input.removeAttribute("name");
     input.hidden = true;
     input.tabIndex = -1;
     input.setAttribute("aria-hidden", "true");
+    // Move the stock input's id onto the editor so the admin's
+    // `<label for="searchbar">` names the real combobox. Without this the
+    // enhanced input has no accessible name (WCAG 4.1.2 / 1.3.1); the transient
+    // duplicate id is gone by the next statement, before any AT query.
+    if (input.id) {
+      editor.id = input.id;
+      input.removeAttribute("id");
+    }
     input.parentNode.insertBefore(wrap, input.nextSibling);
 
     var state = { schema: { fields: [], default_fields: [] } };
