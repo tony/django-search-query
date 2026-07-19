@@ -19,6 +19,8 @@ from __future__ import annotations
 import logging
 import typing as t
 
+from django.db.models import Q
+
 from .__about__ import __version__
 from .compiler import build_q
 from .errors import QueryParseError
@@ -26,8 +28,6 @@ from .parser import parse
 
 if t.TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
-
-    from django.db.models import Q
 
     from .registry import FieldRegistry
 
@@ -77,6 +77,10 @@ def search_query_to_q(
     ... )
     <Q: (AND: ('status__iexact', 'open'))>
     """
+    if not query.strip():
+        # An empty or whitespace-only query matches everything; a search
+        # endpoint receiving a blank ``q`` should not raise a parse error.
+        return Q()
     # FieldSpec.path is the authoritative ORM path; the caller's field_map
     # overrides it per-call. Merge so an unmapped field still resolves to its
     # registered path rather than its bare name.

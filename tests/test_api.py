@@ -34,3 +34,15 @@ def test_field_map_overrides_registry_path() -> None:
         default_fields=("title",),
     )
     assert result == Q(override__name__icontains="tony")
+
+
+def test_empty_query_is_match_all() -> None:
+    """An empty or whitespace-only query compiles to a match-all ``Q()``."""
+    registry = FieldRegistry(specs=(FieldSpec(name="status", kind="enum"),))
+    result = search_query_to_q(
+        "   ",
+        registry=registry,
+        field_map={},
+        default_fields=("title",),
+    )
+    assert result == Q()
