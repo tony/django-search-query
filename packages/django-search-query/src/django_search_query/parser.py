@@ -262,7 +262,7 @@ class _Parser:
         )
 
 
-def _join(op: type[And] | type[Or], left: Node, right: Node) -> Node:
+def _join(op: type[And | Or], left: Node, right: Node) -> Node:
     """Combine ``left`` and ``right`` under ``op``, flattening same-op nests.
 
     Keeps ``And`` / ``Or`` n-ary so ``a b c`` yields a single ``And`` of three
