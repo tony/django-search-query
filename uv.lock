@@ -7,17 +7,19 @@ exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for 
 exclude-newer-span = "P3D"
 
 [options.exclude-newer-package]
-sphinx-autodoc-docutils = false
 gp-sphinx = false
-gp-furo-theme = false
-sphinx-autodoc-api-style = false
 sphinx-autodoc-sphinx = false
+sphinx-autodoc-api-style = false
 sphinx-ux-autodoc-layout = false
 sphinx-gp-llms = false
-sphinx-gp-sitemap = false
-sphinx-fonts = false
+sphinx-autodoc-argparse = false
 sphinx-ux-badges = false
 gp-libs = false
+sphinx-autodoc-docutils = false
+gp-furo-theme = false
+sphinx-gp-sitemap = false
+sphinx-fonts = false
+sphinx-autodoc-typehints-gp = false
 sphinx-gp-opengraph = false
 sphinx-gp-theme = false
 
