@@ -43,6 +43,12 @@ Workflow actions moved to their current major releases: `actions/checkout` v7,
 unchanged, though setup-uv no longer prunes the uv cache, so the first run
 after this repopulates it.
 
+#### Lint floor moved to ruff 0.16 (#7)
+
+Minimum `ruff>=0.16.0` (was unpinned). 0.16.0 starts formatting Python code
+blocks inside Markdown, so `ruff format` now covers the docs tree alongside
+each package's `src/` and the shared `tests/`.
+
 ## django-search-query 0.1.0a0 (2026-07-19)
 
 django-search-query 0.1.0a0 is the first alpha of the workspace, shipping the
