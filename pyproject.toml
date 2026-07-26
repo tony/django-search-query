@@ -120,6 +120,12 @@ convention = "numpy"
 [tool.ruff.lint.per-file-ignores]
 "*/__init__.py" = ["F401"]
 "packages/*/src/**/*.py" = ["PTH"]
+"docs/conf.py" = [
+  # The Sphinx config `exec`s the core package's `__about__.py` to pull title,
+  # version and URLs from one source. The input is a checked-in module of
+  # string assignments resolved by path, never user data.
+  "S102",
+]
 
 [tool.ty.environment]
 # Django 6.0 drops Python 3.10/3.11, so the workspace floor is 3.12.
