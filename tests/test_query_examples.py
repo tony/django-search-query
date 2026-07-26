@@ -42,8 +42,10 @@ CASES: list[tuple[str, str]] = [
     ),
     (
         "status:*",  # existence
-        "<Q: (AND: (NOT (AND: ('status', ''))), "
-        "(NOT (AND: ('status__isnull', True))))>",
+        (
+            "<Q: (AND: (NOT (AND: ('status', ''))), "
+            "(NOT (AND: ('status__isnull', True))))>"
+        ),
     ),
 ]
 

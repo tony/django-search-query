@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django_search_query",
     "django_admin_search_query",  # optional: admin integration
-    ...
+    ...,
 ]
 ```
 
