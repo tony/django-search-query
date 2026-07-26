@@ -49,6 +49,11 @@ Minimum `ruff>=0.16.0` (was unpinned). 0.16.0 starts formatting Python code
 blocks inside Markdown, so `ruff format` now covers the docs tree alongside
 each package's `src/` and the shared `tests/`.
 
+Linting also adopts ruff's curated default rule set. The project's own linter
+selection is layered on top of it with `extend-select` instead of replacing it,
+so contributors get ruff's recommended baseline -- security, typing-stub, and
+implicit-concatenation checks among them -- without hand-maintaining the list.
+
 ## django-search-query 0.1.0a0 (2026-07-19)
 
 django-search-query 0.1.0a0 is the first alpha of the workspace, shipping the
