@@ -308,7 +308,7 @@ wheels = [
 
 [[package]]
 name = "django-admin-search-query"
-version = "0.1.0a0"
+version = "0.1.0a1"
 source = { editable = "packages/django-admin-search-query" }
 dependencies = [
     { name = "django" },
@@ -336,7 +336,7 @@ wheels = [
 
 [[package]]
 name = "django-search-query"
-version = "0.1.0a0"
+version = "0.1.0a1"
 source = { editable = "packages/django-search-query" }
 dependencies = [
     { name = "django" },

@@ -8,7 +8,7 @@ __description__ = (
     "Django admin integration for django-search-query, "
     "with an optional vanilla-JS search input."
 )
-__version__ = "0.1.0a0"
+__version__ = "0.1.0a1"
 __author__ = "Tony Narlock"
 __github__ = "https://github.com/tony/django-search-query"
 __pypi__ = "https://pypi.org/project/django-admin-search-query/"

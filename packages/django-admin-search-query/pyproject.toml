@@ -1,6 +1,6 @@
 [project]
 name = "django-admin-search-query"
-version = "0.1.0a0"
+version = "0.1.0a1"
 description = "Structured search for the Django admin, with an optional vanilla-JavaScript input that adds live syntax highlighting and autocomplete."
 requires-python = ">=3.12,<4.0"
 authors = [

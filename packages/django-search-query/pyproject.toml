@@ -1,6 +1,6 @@
 [project]
 name = "django-search-query"
-version = "0.1.0a0"
+version = "0.1.0a1"
 description = "A Lucene-inspired search query language for Django that compiles search strings into ORM Q objects."
 requires-python = ">=3.12,<4.0"
 authors = [
