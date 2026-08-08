@@ -62,7 +62,7 @@ dev = [
   "coverage",
   "pytest-cov",
   # Lint / types
-  "ruff>=0.16.0",
+  "ruff>=0.16.1",
   "ty",
   "django-stubs",
   # Pygments lexer for `dsq` code fences (dev/docs only, not a runtime dep)
