@@ -16,6 +16,15 @@ _Upcoming changes will be written here._
 
 <!-- END PLACEHOLDER - ADD NEW CHANGELOG ENTRIES BELOW THIS LINE -->
 
+### What's new
+
+#### Django 6.1 support (#8)
+
+Both packages now support Django 6.1 alongside 5.2 (LTS) and 6.0, tested on
+Python 3.12 and 3.14 and declared in each package's PyPI metadata. The query
+language and the admin integration needed no changes for it, and the
+`django>=5.2` floor is unchanged -- upgrading stays your project's decision.
+
 ### Documentation
 
 #### Tutorials, reference, and highlighted query examples (#4)
@@ -53,6 +62,14 @@ Linting also adopts ruff's curated default rule set. The project's own linter
 selection is layered on top of it with `extend-select` instead of replacing it,
 so contributors get ruff's recommended baseline -- security, typing-stub, and
 implicit-concatenation checks among them -- without hand-maintaining the list.
+
+#### The test matrix runs the versions it names (#8)
+
+Each CI leg installed the Django it was named for, then `uv run` re-synced the
+environment from `uv.lock` and reinstalled the locked version over it, so every
+leg tested the same Django. Legs now hold their install, and a leg fails
+outright when the Python or the Django it is running is not the one it asked
+for.
 
 ## django-search-query 0.1.0a0 (2026-07-19)
 
