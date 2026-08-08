@@ -1,0 +1,30 @@
+session_name: django-search-query
+start_directory: ./ # load session relative to config location (project root).
+windows:
+- window_name: django-search-query
+  focus: True
+  layout: main-horizontal
+  options:
+    main-pane-height: 67%
+  panes:
+  - focus: true
+  - pane
+  - just watch-test
+- window_name: docs
+  layout: main-horizontal
+  options:
+    main-pane-height: 67%
+  start_directory: docs/
+  panes:
+  - focus: true
+  - pane
+  - pane
+  - just start
+- window_name: dev
+  layout: main-horizontal
+  options:
+    main-pane-height: 67%
+  panes:
+  - focus: true
+  - pane
+  - just dev
