@@ -28,7 +28,7 @@ The project dogfoods gp-libs' pytest/doctest tooling and gp-sphinx for documenta
 
 This project uses:
 - Python 3.12+ (Django 6.0 drops 3.10/3.11, so 3.12 is the floor)
-- Django 5.2 (LTS) and 6.0
+- Django 5.2 (LTS), 6.0, and 6.1
 - [uv](https://github.com/astral-sh/uv) for dependency management (single root lockfile, workspace of two packages)
 - [ruff](https://github.com/astral-sh/ruff) for linting/formatting
 - [ty](https://docs.astral.sh/ty/) for type checking (consumes `django-stubs` as PEP 561 stubs; no mypy plugin)

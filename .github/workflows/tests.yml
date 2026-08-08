@@ -5,10 +5,15 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # `uv run` re-syncs the environment to uv.lock before each command, which
+      # would reinstall the locked Django over the matrix version installed
+      # below. The sync is done once, explicitly, in "Install dependencies".
+      UV_NO_SYNC: '1'
     strategy:
       matrix:
         python-version: ['3.12', '3.14']
-        django-version: ['5.2', '6.0']
+        django-version: ['5.2', '6.0', '6.1']
     steps:
       - uses: actions/checkout@v7
 
@@ -27,9 +32,25 @@ jobs:
         run: uv pip install "Django~=${{ matrix.django-version }}.0"
 
       - name: Print versions
+        env:
+          PYTHON_VERSION: ${{ matrix.python-version }}
+          DJANGO_VERSION: ${{ matrix.django-version }}
         run: |
-          uv run python -V
-          uv run python -c "import django; print('Django', django.get_version())"
+          uv run python - <<'PY'
+          import os
+          import sys
+
+          import django
+
+          checks = (
+              ("Python", os.environ["PYTHON_VERSION"], "%d.%d" % sys.version_info[:2]),
+              ("Django", os.environ["DJANGO_VERSION"], django.get_version()),
+          )
+          for name, want, got in checks:
+              print(name, got)
+              if got.split(".")[:2] != want.split("."):
+                  raise SystemExit(f"expected {name} {want}.x, got {got}")
+          PY
 
       - name: Lint with ruff check
         run: uv run ruff check .

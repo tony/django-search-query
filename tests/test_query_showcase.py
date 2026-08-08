@@ -5,7 +5,7 @@ their source of truth (per docs/AGENTS.md: rendered-SQL output is prose to
 pytest, checked against a passing test).
 
 SQL is asserted by stable fragments of ``str(qs.query)`` rather than a full
-string, so it holds across the Django 5.2/6.0 matrix. The docs render a clean
+string, so it holds across the Django 5.2/6.0/6.1 matrix. The docs render a clean
 WHERE clause faithful to those fragments (``str(qs.query)`` itself is Django's
 unquoted debug SQL, unfit for display).
 """

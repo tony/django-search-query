@@ -37,6 +37,8 @@ sphinx-gp-llms = false
 sphinx-gp-theme = false
 sphinx-ux-autodoc-layout = false
 sphinx-ux-badges = false
+# TEMPORARY - drop once Django 6.1 (2026-08-05) clears uv's 3-day cooldown.
+django = false
 
 [dependency-groups]
 dev = [
