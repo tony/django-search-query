@@ -33,7 +33,7 @@ See `AGENTS.md` for the full contributor guide.
 ## Supported versions
 
 - Python 3.12+
-- Django 5.2 (LTS) and 6.0
+- Django 5.2 (LTS), 6.0, and 6.1
 
 [Lucene]: https://lucene.apache.org/
 [Django]: https://docs.djangoproject.com/

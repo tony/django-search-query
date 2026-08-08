@@ -28,7 +28,7 @@ $ pip install django-admin-search-query
 ## Supported versions
 
 - Python 3.12+
-- Django 5.2 (LTS) and 6.0
+- Django 5.2 (LTS), 6.0, and 6.1
 
 ## Documentation
 
