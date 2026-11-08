@@ -64,7 +64,7 @@ Before claiming a test or a gate works, show it failing. A gate that has
 never been red is an assumption.
 
 CI (`.github/workflows/tests.yml`) runs the same four checks — lint, format
-check, type-check, test with coverage — across a matrix of Python 3.12/3.14
+check, type-check, test with coverage — across a matrix of Python 3.12/3.15
 and Django 5.2/6.0/6.1. Passing locally on one interpreter is not the same
 claim as passing CI.
 
