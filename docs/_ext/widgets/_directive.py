@@ -28,7 +28,7 @@ def make_widget_directive(widget_cls: type[BaseWidget]) -> type[SphinxDirective]
         # docutils.Directive declares option_spec as an instance attribute;
         # ty flags the ClassVar override as an LSP violation, but docutils
         # itself only ever reads it through the class.
-        option_spec: t.ClassVar[dict[str, t.Any]] = dict(  # ty: ignore[invalid-attribute-override]
+        option_spec: t.ClassVar[dict[str, t.Any]] = dict(  # ty: ignore[incompatible-attribute-override]
             widget_cls.option_spec
         )
 
